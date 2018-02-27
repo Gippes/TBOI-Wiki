@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="viewType"
+        android:summary="How will items be displayed?"
+        android:title="View items type" />
+</PreferenceScreen>
