@@ -1,14 +1,12 @@
 package com.example.gippes.isaacfastwiki
 
-
 import android.app.LoaderManager
-
 import android.content.Context
 import android.content.Intent
 import android.content.Loader
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.FragmentActivity
 import android.util.SparseArray
 import android.view.Menu
 import android.view.MenuItem
@@ -20,10 +18,12 @@ import android.widget.RelativeLayout
 import com.example.gippes.isaacfastwiki.ViewType.GRID
 import com.example.gippes.isaacfastwiki.ViewType.LIST
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : FragmentActivity() {
     lateinit var mainLayout: RelativeLayout
     lateinit var config: Configuration
     lateinit var items: SparseArray<Item>
+    lateinit var itemInfoFragment: ItemInfoFragment
+    lateinit var itemsFragment: ItemsFragment
 
     var gridView: GridView? = null
     var listView: ListView? = null
@@ -51,8 +51,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mainLayout = findViewById(R.id.main_activity_layout)
-        loaderManager.initLoader(1, Bundle.EMPTY, ItemsLoaderCallbacks())
+        itemsFragment = ItemsFragment()
+        itemInfoFragment = ItemInfoFragment()
+        supportFragmentManager.beginTransaction().add(R.id.main_activity_layout, itemsFragment).commit()
+
+//        loaderManager.initLoader(1, Bundle.EMPTY, ItemsLoaderCallbacks())
         config = Configuration()
     }
 
@@ -69,13 +72,13 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.menuShowGrid -> {
                 mainLayout.removeView(listView)
-                createGridView()
+                addGridViewToViewGroup(mainLayout)
                 config.viewType = GRID
                 item.isChecked = true
             }
             R.id.menuShowList -> {
                 mainLayout.removeView(gridView)
-                createListView()
+                addListViewToViewGroup(mainLayout)
                 config.viewType = LIST
                 item.isChecked = true
             }
@@ -83,29 +86,29 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun createListView() {
+    private fun addListViewToViewGroup(viewGroup: ViewGroup) {
         if (listView == null) {
-            val viwGroup = layoutInflater.inflate(R.layout.view_list_items, mainLayout, false) as ViewGroup
-            listView = viwGroup.findViewById(R.id.list_items)
+            val parent = layoutInflater.inflate(R.layout.view_list_items, viewGroup, false) as ViewGroup
+            listView = parent.findViewById(R.id.list_items)
             listView?.adapter = ListAdapter(this, items)
             listView?.onItemClickListener = onItemClickListener
-            viwGroup.removeView(listView)
-            mainLayout.addView(listView)
-        } else if (listView?.parent != mainLayout) {
-            mainLayout.addView(listView)
+            parent.removeView(listView)
+            viewGroup.addView(listView)
+        } else if (listView?.parent != viewGroup) {
+            viewGroup.addView(listView)
         }
     }
 
-    private fun createGridView() {
+    private fun addGridViewToViewGroup(viewGroup: ViewGroup) {
         if (gridView == null) {
-            val viewGroup = layoutInflater.inflate(R.layout.view_grid_items, mainLayout, false) as ViewGroup
-            gridView = viewGroup.findViewById(R.id.grid_items)
+            val parent = layoutInflater.inflate(R.layout.view_grid_items, viewGroup, false) as ViewGroup
+            gridView = parent.findViewById(R.id.grid_items)
             gridView?.adapter = GridAdapter(this, items)
             gridView?.onItemClickListener = onItemClickListener
-            viewGroup.removeView(gridView)
-            mainLayout.addView(gridView)
-        } else if (gridView?.parent != mainLayout) {
-            mainLayout.addView(gridView)
+            parent.removeView(gridView)
+            viewGroup.addView(gridView)
+        } else if (gridView?.parent != viewGroup) {
+            viewGroup.addView(viewGroup)
         }
     }
 
@@ -116,8 +119,8 @@ class MainActivity : AppCompatActivity() {
         override fun onLoadFinished(loader: Loader<SparseArray<Item>>?, data: SparseArray<Item>?) {
             items = data!!
             when (config.viewType) {
-                GRID -> createGridView()
-                LIST -> createListView()
+                GRID -> addGridViewToViewGroup(mainLayout)
+                LIST -> addListViewToViewGroup(mainLayout)
             }
         }
 
