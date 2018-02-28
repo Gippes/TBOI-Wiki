@@ -2,6 +2,7 @@ package com.example.gippes.isaacfastwiki
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,24 +16,25 @@ class ListItemsFragment : Fragment() {
     companion object {
         const val TAG: String = "ListFragment"
     }
+    var mainView: View? = null
     lateinit var listView: ListView
+    lateinit var items: SparseArray<Item>
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val parent = inflater!!.inflate(R.layout.view_list_items, container, false) as ViewGroup
-        listView = parent.findViewById(R.id.list_items) as ListView
-        listView.adapter = ListAdapter(activity, (activity as MainActivity).items)
+        if (mainView == null) {
+            mainView = inflater!!.inflate(R.layout.view_list_items, container, false)
+            listView = mainView?.findViewById(R.id.list_items) as ListView
+            items = (activity as MainActivity).items
+            retainInstance = true
+        }
+        listView.adapter = ListAdapter(activity, items)
         listView.onItemClickListener = (activity as MainActivity).onItemClickListener
-        return parent
+        return mainView!!
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        super.onSaveInstanceState(outState)
-        listView.let { outState?.putInt("list_vertical_position", it.verticalScrollbarPosition) }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        listView.let { it.verticalScrollbarPosition = savedInstanceState?.getInt("list_vertical_position") ?: 0 }
+    override fun onDestroy() {
+        mainView = null
+        super.onDestroy()
     }
 }
 

@@ -2,7 +2,7 @@ package com.example.gippes.isaacfastwiki
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
+import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,24 +16,24 @@ class GridItemsFragment : Fragment() {
         const val TAG = "GridFragment"
     }
 
+    var mainView: View? = null
     lateinit var gridView: GridView
-
-    override fun onSaveInstanceState(outState: Bundle?) {
-        super.onSaveInstanceState(outState)
-        outState?.putParcelable("key", gridView.onSaveInstanceState())
-    }
+    lateinit var items: SparseArray<Item>
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val parent = inflater!!.inflate(R.layout.view_grid_items, container, false)
-        gridView = parent.findViewById(R.id.grid_items) as GridView
-        gridView.adapter = GridAdapter(activity, (activity as MainActivity).items)
-        savedInstanceState?.let { gridView.onRestoreInstanceState(savedInstanceState.getParcelable("key")) }
+        if (mainView == null) {
+            mainView = inflater!!.inflate(R.layout.view_grid_items, container, false)
+            gridView = mainView!!.findViewById(R.id.grid_items)
+            items = (activity as MainActivity).items
+            retainInstance = true
+        }
         gridView.onItemClickListener = (activity as MainActivity).onItemClickListener
-        return parent
+        gridView.adapter = GridAdapter(activity, items)
+        return mainView!!
     }
 
     override fun onDestroy() {
+        mainView = null
         super.onDestroy()
-        Log.i(LOG_TAG, "fragment destroyed")
     }
 }

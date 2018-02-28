@@ -10,9 +10,6 @@ import android.util.SparseArray
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.AdapterView.OnItemClickListener
-import android.widget.BaseAdapter
-import android.widget.GridView
-import android.widget.ListView
 import android.widget.RelativeLayout
 import com.example.gippes.isaacfastwiki.ViewType.GRID
 import com.example.gippes.isaacfastwiki.ViewType.LIST
@@ -30,9 +27,9 @@ class MainActivity : AppCompatActivity() {
 
     val onItemClickListener = OnItemClickListener({ _, _, pos, _ ->
         if (supportFragmentManager.findFragmentByTag(ItemInfoFragment.TAG) == null) {
-            val b = Bundle()
-            b.putInt("position", pos)
-            itemInfoFragment.arguments = b
+            val args = Bundle()
+            args.putInt("position", pos)
+            itemInfoFragment.arguments = args
             supportFragmentManager.beginTransaction()
                     .add(R.id.main_activity_layout, itemInfoFragment, ItemInfoFragment.TAG)
                     .addToBackStack(null)
@@ -51,7 +48,10 @@ class MainActivity : AppCompatActivity() {
 
         loaderManager.initLoader(1, Bundle.EMPTY, ItemsLoaderCallbacks())
         config = Configuration()
-        actionBar?.show()
+        supportFragmentManager.findFragmentByTag(ItemInfoFragment.TAG)?.let {
+            supportFragmentManager.beginTransaction().remove(it).commit()
+            supportFragmentManager.popBackStack()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -86,10 +86,6 @@ class MainActivity : AppCompatActivity() {
             } else {
                 supportFragmentManager.beginTransaction().replace(R.id.main_activity_layout, listItemsFragment, ListItemsFragment.TAG).commit()
             }
-        } else {
-            val listView = findViewById<ListView>(R.id.list_items)
-            listView.adapter = ListAdapter(this, items)
-            (listView.adapter as BaseAdapter).notifyDataSetChanged()
         }
     }
 
@@ -100,10 +96,6 @@ class MainActivity : AppCompatActivity() {
             } else {
                 supportFragmentManager.beginTransaction().replace(R.id.main_activity_layout, gridItemsFragment, GridItemsFragment.TAG).commit()
             }
-        } else {
-            val gridView = findViewById<GridView>(R.id.grid_items)
-            gridView.adapter = GridAdapter(this, items)
-            (gridView.adapter as BaseAdapter).notifyDataSetChanged()
         }
     }
 
