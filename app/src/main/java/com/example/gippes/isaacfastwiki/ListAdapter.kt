@@ -21,7 +21,7 @@ class ListAdapter(private val context: Context, val items: SparseArray<Item>) : 
         var view = convertView
         if (view == null) {
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            view = inflater.inflate(R.layout.view_item, parent,false)
+            view = inflater.inflate(R.layout.view_list_element, parent,false)
         }
         view?.findViewById<ImageView>(R.id.image)?.setImageDrawable(Drawable.createFromStream(context.assets.open("images/${items[position].imageName}"), items[position].imageName))
         view?.findViewById<TextView>(R.id.title)?.text = items[position].title

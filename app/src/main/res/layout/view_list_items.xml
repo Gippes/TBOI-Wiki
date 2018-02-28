@@ -8,5 +8,5 @@
         android:id="@+id/list_items"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/view_item" />
+        tools:listitem="@layout/view_list_element" />
 </android.support.constraint.ConstraintLayout>

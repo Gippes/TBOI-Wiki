@@ -2,94 +2,109 @@ package com.example.gippes.isaacfastwiki
 
 import android.app.LoaderManager
 import android.content.Context
-import android.content.Intent
 import android.content.Loader
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.support.v4.app.FragmentActivity
+import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.util.SparseArray
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.AdapterView.OnItemClickListener
+import android.widget.BaseAdapter
 import android.widget.GridView
 import android.widget.ListView
 import android.widget.RelativeLayout
 import com.example.gippes.isaacfastwiki.ViewType.GRID
 import com.example.gippes.isaacfastwiki.ViewType.LIST
 
-class MainActivity : FragmentActivity() {
+const val LOG_TAG = "gipTag"
+
+class MainActivity : AppCompatActivity() {
     lateinit var mainLayout: RelativeLayout
     lateinit var config: Configuration
-    lateinit var items: SparseArray<Item>
     lateinit var itemInfoFragment: ItemInfoFragment
     lateinit var gridItemsFragment: GridItemsFragment
     lateinit var listItemsFragment: ListItemsFragment
 
-    var gridView: GridView? = null
-    var listView: ListView? = null
+    var items: SparseArray<Item> = SparseArray()
+
     val onItemClickListener = OnItemClickListener({ _, _, pos, _ ->
-        intent = Intent("android.intent.action.isaacItem")
-        intent.putExtra("Title", items[pos].message)
-        intent.putExtra("Description", items.get(pos).description)
-        intent.putExtra("ImageName", items[pos].imageName)
-        startActivity(intent)
+        if (supportFragmentManager.findFragmentByTag(ItemInfoFragment.TAG) == null) {
+            val b = Bundle()
+            b.putInt("position", pos)
+            itemInfoFragment.arguments = b
+            supportFragmentManager.beginTransaction()
+                    .add(R.id.main_activity_layout, itemInfoFragment, ItemInfoFragment.TAG)
+                    .addToBackStack(null)
+                    .commit()
+        }
     })
-
-    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
-        super.onSaveInstanceState(outState, outPersistentState)
-        gridView?.let { outState?.putInt("grid_vertical_position", it.verticalScrollbarPosition) }
-        listView?.let { outState?.putInt("list_vertical_position", it.verticalScrollbarPosition) }
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        super.onRestoreInstanceState(savedInstanceState)
-        gridView?.let { it.verticalScrollbarPosition = savedInstanceState?.getInt("grid_vertical_position") ?: 0 }
-        listView?.let { it.verticalScrollbarPosition = savedInstanceState?.getInt("list_vertical_position") ?: 0 }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        mainLayout = findViewById(R.id.main_activity_layout)
         gridItemsFragment = GridItemsFragment()
         listItemsFragment = ListItemsFragment()
         itemInfoFragment = ItemInfoFragment()
 
         loaderManager.initLoader(1, Bundle.EMPTY, ItemsLoaderCallbacks())
         config = Configuration()
+        actionBar?.show()
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//        menuInflater.inflate(R.menu.main_menu, menu)
-//        when (config.viewType) {
-//            GRID -> menu.findItem(R.id.menuShowGrid).isChecked = true
-//            LIST -> menu.findItem(R.id.menuShowList).isChecked = true
-//        }
-//        return super.onCreateOptionsMenu(menu)
-//    }
-
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId) {
-//            R.id.menuShowGrid -> {
-//                mainLayout.removeView(listView)
-//                addGridViewToViewGroup(mainLayout)
-//                config.viewType = GRID
-//                item.isChecked = true
-//            }
-//            R.id.menuShowList -> {
-//                mainLayout.removeView(gridView)
-//                addListViewToViewGroup(mainLayout)
-//                config.viewType = LIST
-//                item.isChecked = true
-//            }
-//        }
-//        return super.onOptionsItemSelected(item)
-//    }
-
-    private fun displayListFragment(){
-        supportFragmentManager.beginTransaction().add(R.id.main_activity_layout, listItemsFragment).commit()
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        when (config.viewType) {
+            GRID -> menu.findItem(R.id.menuShowGrid).isChecked = true
+            LIST -> menu.findItem(R.id.menuShowList).isChecked = true
+        }
+        return super.onCreateOptionsMenu(menu)
     }
 
-    private fun displayGridFragment(){
-        supportFragmentManager.beginTransaction().add(R.id.main_activity_layout, gridItemsFragment).commit()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menuShowGrid -> {
+                displayGridFragment()
+                config.viewType = GRID
+                item.isChecked = true
+            }
+            R.id.menuShowList -> {
+                displayListFragment()
+                config.viewType = LIST
+                item.isChecked = true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun displayListFragment() {
+        if (supportFragmentManager.findFragmentByTag(ListItemsFragment.TAG) == null) {
+            if (supportFragmentManager.findFragmentByTag(GridItemsFragment.TAG) == null) {
+                supportFragmentManager.beginTransaction().add(R.id.main_activity_layout, listItemsFragment, ListItemsFragment.TAG).commit()
+            } else {
+                supportFragmentManager.beginTransaction().replace(R.id.main_activity_layout, listItemsFragment, ListItemsFragment.TAG).commit()
+            }
+        } else {
+            val listView = findViewById<ListView>(R.id.list_items)
+            listView.adapter = ListAdapter(this, items)
+            (listView.adapter as BaseAdapter).notifyDataSetChanged()
+        }
+    }
+
+    private fun displayGridFragment() {
+        if (supportFragmentManager.findFragmentByTag(GridItemsFragment.TAG) == null) {
+            if (supportFragmentManager.findFragmentByTag(ListItemsFragment.TAG) == null) {
+                supportFragmentManager.beginTransaction().add(R.id.main_activity_layout, gridItemsFragment, GridItemsFragment.TAG).commit()
+            } else {
+                supportFragmentManager.beginTransaction().replace(R.id.main_activity_layout, gridItemsFragment, GridItemsFragment.TAG).commit()
+            }
+        } else {
+            val gridView = findViewById<GridView>(R.id.grid_items)
+            gridView.adapter = GridAdapter(this, items)
+            (gridView.adapter as BaseAdapter).notifyDataSetChanged()
+        }
     }
 
     inner class ItemsLoaderCallbacks : LoaderManager.LoaderCallbacks<SparseArray<Item>> {
@@ -102,10 +117,10 @@ class MainActivity : FragmentActivity() {
                 GRID -> displayGridFragment()
                 LIST -> displayListFragment()
             }
+            Log.i(LOG_TAG, "load finished")
         }
 
         override fun onLoaderReset(loader: Loader<SparseArray<Item>>?) {}
-
     }
 
     inner class Configuration {

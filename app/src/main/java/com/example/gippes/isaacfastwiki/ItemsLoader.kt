@@ -17,18 +17,19 @@ import java.io.InputStream
  * Created by gippes on 18.02.18.
  */
 
-const val IMAGES_PATH = "file:///android_asset/images/"
-const val LOG_TAG = "gipTag"
 
 class ItemsLoader(context: Context) : AsyncTaskLoader<SparseArray<Item>>(context) {
     private val assetManager: AssetManager = context.assets
     private var items: SparseArray<Item> = SparseArray()
     val database: SQLiteDatabase = DBHelper(context).writableDatabase
 
+    companion object {
+        const val IMAGES_PATH = "file:///android_asset/images/"
+    }
+
     init {
         forceLoad()
     }
-
 
     override fun loadInBackground(): SparseArray<Item> {
         database.query(TABLE_ITEMS, null, null, null, null, null, null).use {
@@ -37,7 +38,6 @@ class ItemsLoader(context: Context) : AsyncTaskLoader<SparseArray<Item>>(context
         if (items.size() == 0) saveItemsToDataBase()
         return items
     }
-
 
     private fun loadItemsFromDatabase(cursor: Cursor) {
         items = SparseArray(cursor.count)

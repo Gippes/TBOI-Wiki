@@ -18,7 +18,7 @@
         </activity>
 
         <activity
-            android:name=".ItemActivity"
+            android:name=".ItemInfoFragment"
             android:label="@string/title_activity_item"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Base.Theme.AppCompat.Dialog"
