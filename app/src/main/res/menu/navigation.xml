@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nvgt_grid"
+        android:icon="@drawable/grid_icon"
+        android:title="@string/grid"/>
+    <item
+        android:id="@+id/nvgt_list"
+        android:icon="@drawable/list_2"
+        android:title="@string/list"/>
+    <item
+        android:id="@+id/nvgt_search"
+        android:icon="@drawable/search"
+        android:title="@string/search"/>
+</menu>

@@ -4,20 +4,19 @@ import android.app.LoaderManager
 import android.content.Context
 import android.content.Loader
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
+import android.support.design.widget.CoordinatorLayout
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.util.SparseArray
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.AdapterView.OnItemClickListener
-import android.widget.RelativeLayout
 import com.example.gippes.isaacfastwiki.ViewType.GRID
 import com.example.gippes.isaacfastwiki.ViewType.LIST
 
 const val LOG_TAG = "gipTag"
 
 class MainActivity : AppCompatActivity() {
-    lateinit var mainLayout: RelativeLayout
+    lateinit var mainLayout: CoordinatorLayout
     lateinit var config: Configuration
     lateinit var itemInfoFragment: ItemInfoFragment
     lateinit var gridItemsFragment: GridItemsFragment
@@ -36,6 +35,24 @@ class MainActivity : AppCompatActivity() {
                     .commit()
         }
     })
+    val onNavigationSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener {
+        when (it.itemId) {
+            R.id.nvgt_grid -> {
+                displayGridFragment()
+                config.viewType = GRID
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.nvgt_list -> {
+                displayListFragment()
+                config.viewType = LIST
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.nvgt_search -> {
+                return@OnNavigationItemSelectedListener true
+            }
+        }
+        return@OnNavigationItemSelectedListener false
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +63,9 @@ class MainActivity : AppCompatActivity() {
         listItemsFragment = ListItemsFragment()
         itemInfoFragment = ItemInfoFragment()
 
+//        supportActionBar?.hide()
+        findViewById<BottomNavigationView>(R.id.navigation)?.setOnNavigationItemSelectedListener(onNavigationSelectedListener)
+
         loaderManager.initLoader(1, Bundle.EMPTY, ItemsLoaderCallbacks())
         config = Configuration()
         supportFragmentManager.findFragmentByTag(ItemInfoFragment.TAG)?.let {
@@ -54,37 +74,37 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        when (config.viewType) {
-            GRID -> menu.findItem(R.id.menuShowGrid).isChecked = true
-            LIST -> menu.findItem(R.id.menuShowList).isChecked = true
-        }
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menuShowGrid -> {
-                displayGridFragment()
-                config.viewType = GRID
-                item.isChecked = true
-            }
-            R.id.menuShowList -> {
-                displayListFragment()
-                config.viewType = LIST
-                item.isChecked = true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        menuInflater.inflate(R.menu.main_menu, menu)
+//        when (config.viewType) {
+//            GRID -> menu.findItem(R.id.menuShowGrid).isChecked = true
+//            LIST -> menu.findItem(R.id.menuShowList).isChecked = true
+//        }
+//        return super.onCreateOptionsMenu(menu)
+//    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when (item.itemId) {
+//            R.id.menuShowGrid -> {
+//                displayGridFragment()
+//                config.viewType = GRID
+//                item.isChecked = true
+//            }
+//            R.id.menuShowList -> {
+//                displayListFragment()
+//                config.viewType = LIST
+//                item.isChecked = true
+//            }
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
 
     private fun displayListFragment() {
         if (supportFragmentManager.findFragmentByTag(ListItemsFragment.TAG) == null) {
             if (supportFragmentManager.findFragmentByTag(GridItemsFragment.TAG) == null) {
-                supportFragmentManager.beginTransaction().add(R.id.main_activity_layout, listItemsFragment, ListItemsFragment.TAG).commit()
+                supportFragmentManager.beginTransaction().add(R.id.main_activity_container, listItemsFragment, ListItemsFragment.TAG).commit()
             } else {
-                supportFragmentManager.beginTransaction().replace(R.id.main_activity_layout, listItemsFragment, ListItemsFragment.TAG).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.main_activity_container, listItemsFragment, ListItemsFragment.TAG).commit()
             }
         }
     }
@@ -92,9 +112,9 @@ class MainActivity : AppCompatActivity() {
     private fun displayGridFragment() {
         if (supportFragmentManager.findFragmentByTag(GridItemsFragment.TAG) == null) {
             if (supportFragmentManager.findFragmentByTag(ListItemsFragment.TAG) == null) {
-                supportFragmentManager.beginTransaction().add(R.id.main_activity_layout, gridItemsFragment, GridItemsFragment.TAG).commit()
+                supportFragmentManager.beginTransaction().add(R.id.main_activity_container, gridItemsFragment, GridItemsFragment.TAG).commit()
             } else {
-                supportFragmentManager.beginTransaction().replace(R.id.main_activity_layout, gridItemsFragment, GridItemsFragment.TAG).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.main_activity_container, gridItemsFragment, GridItemsFragment.TAG).commit()
             }
         }
     }
