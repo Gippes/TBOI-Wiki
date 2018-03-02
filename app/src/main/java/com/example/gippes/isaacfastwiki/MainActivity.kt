@@ -1,26 +1,29 @@
 package com.example.gippes.isaacfastwiki
 
-import android.app.LoaderManager
+import android.app.LoaderManager.LoaderCallbacks
 import android.content.Context
 import android.content.Loader
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.CoordinatorLayout
+import android.support.design.widget.TabLayout
+import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
+import android.support.v7.widget.Toolbar
 import android.util.SparseArray
 import android.widget.AdapterView.OnItemClickListener
+import android.widget.GridView
+import android.widget.ListView
 import com.example.gippes.isaacfastwiki.ViewType.GRID
 import com.example.gippes.isaacfastwiki.ViewType.LIST
 
 const val LOG_TAG = "gipTag"
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), LoaderCallbacks<SparseArray<Item>> {
     lateinit var mainLayout: CoordinatorLayout
     lateinit var config: Configuration
     lateinit var itemInfoFragment: ItemInfoFragment
-    lateinit var gridItemsFragment: GridItemsFragment
-    lateinit var listItemsFragment: ListItemsFragment
+    lateinit var gridItemsFragment: ItemsFragment<GridView>
+    lateinit var listItemsFragment: ItemsFragment<ListView>
 
     var items: SparseArray<Item> = SparseArray()
 
@@ -35,38 +38,25 @@ class MainActivity : AppCompatActivity() {
                     .commit()
         }
     })
-    val onNavigationSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener {
-        when (it.itemId) {
-            R.id.nvgt_grid -> {
-                displayGridFragment()
-                config.viewType = GRID
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.nvgt_list -> {
-                displayListFragment()
-                config.viewType = LIST
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.nvgt_search -> {
-                return@OnNavigationItemSelectedListener true
-            }
-        }
-        return@OnNavigationItemSelectedListener false
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         mainLayout = findViewById(R.id.main_activity_layout)
-        gridItemsFragment = GridItemsFragment()
-        listItemsFragment = ListItemsFragment()
+        gridItemsFragment = buildFragment(R.layout.view_grid_items, R.id.grid_items)
+        listItemsFragment = buildFragment(R.layout.view_list_items, R.id.list_items)
         itemInfoFragment = ItemInfoFragment()
 
-//        supportActionBar?.hide()
-        findViewById<BottomNavigationView>(R.id.navigation)?.setOnNavigationItemSelectedListener(onNavigationSelectedListener)
+        findViewById<Toolbar>(R.id.toolbar)?.let { setSupportActionBar(it) }
+        val viewPager = findViewById<ViewPager>(R.id.viewPager)?.apply { setupViewPager(this) }
+        findViewById<TabLayout>(R.id.tabs)?.apply {
+            setupWithViewPager(viewPager)
+            getTabAt(0)?.setIcon(R.drawable.grid_icon)
+            getTabAt(1)?.setIcon(R.drawable.list_4)
+        }
 
-        loaderManager.initLoader(1, Bundle.EMPTY, ItemsLoaderCallbacks())
+        loaderManager.initLoader(1, Bundle.EMPTY, this)
         config = Configuration()
         supportFragmentManager.findFragmentByTag(ItemInfoFragment.TAG)?.let {
             supportFragmentManager.beginTransaction().remove(it).commit()
@@ -74,66 +64,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//        menuInflater.inflate(R.menu.main_menu, menu)
-//        when (config.viewType) {
-//            GRID -> menu.findItem(R.id.menuShowGrid).isChecked = true
-//            LIST -> menu.findItem(R.id.menuShowList).isChecked = true
-//        }
-//        return super.onCreateOptionsMenu(menu)
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId) {
-//            R.id.menuShowGrid -> {
-//                displayGridFragment()
-//                config.viewType = GRID
-//                item.isChecked = true
-//            }
-//            R.id.menuShowList -> {
-//                displayListFragment()
-//                config.viewType = LIST
-//                item.isChecked = true
-//            }
-//        }
-//        return super.onOptionsItemSelected(item)
-//    }
-
-    private fun displayListFragment() {
-        if (supportFragmentManager.findFragmentByTag(ListItemsFragment.TAG) == null) {
-            if (supportFragmentManager.findFragmentByTag(GridItemsFragment.TAG) == null) {
-                supportFragmentManager.beginTransaction().add(R.id.main_activity_container, listItemsFragment, ListItemsFragment.TAG).commit()
-            } else {
-                supportFragmentManager.beginTransaction().replace(R.id.main_activity_container, listItemsFragment, ListItemsFragment.TAG).commit()
-            }
+    private fun setupViewPager(pager: ViewPager) {
+        pager.adapter = ViewPagerAdapter(supportFragmentManager).apply {
+            addFragment(gridItemsFragment, getString(R.string.grid))
+            addFragment(listItemsFragment, getString(R.string.list))
         }
     }
 
-    private fun displayGridFragment() {
-        if (supportFragmentManager.findFragmentByTag(GridItemsFragment.TAG) == null) {
-            if (supportFragmentManager.findFragmentByTag(ListItemsFragment.TAG) == null) {
-                supportFragmentManager.beginTransaction().add(R.id.main_activity_container, gridItemsFragment, GridItemsFragment.TAG).commit()
-            } else {
-                supportFragmentManager.beginTransaction().replace(R.id.main_activity_container, gridItemsFragment, GridItemsFragment.TAG).commit()
-            }
-        }
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<SparseArray<Item>> = ItemsLoader(this)
+
+    override fun onLoadFinished(loader: Loader<SparseArray<Item>>?, data: SparseArray<Item>?) {
+        items = data!!
+        gridItemsFragment.updateView(onItemClickListener, { GridAdapter(this, items) })
+        listItemsFragment.updateView(onItemClickListener, { ListAdapter(this, items) })
     }
 
-    inner class ItemsLoaderCallbacks : LoaderManager.LoaderCallbacks<SparseArray<Item>> {
-
-        override fun onCreateLoader(id: Int, args: Bundle?): Loader<SparseArray<Item>> = ItemsLoader(this@MainActivity)
-
-        override fun onLoadFinished(loader: Loader<SparseArray<Item>>?, data: SparseArray<Item>?) {
-            items = data!!
-            when (config.viewType) {
-                GRID -> displayGridFragment()
-                LIST -> displayListFragment()
-            }
-            Log.i(LOG_TAG, "load finished")
-        }
-
-        override fun onLoaderReset(loader: Loader<SparseArray<Item>>?) {}
-    }
+    override fun onLoaderReset(loader: Loader<SparseArray<Item>>?) {}
 
     inner class Configuration {
         val preferences = this@MainActivity.getSharedPreferences("isaac_config", Context.MODE_PRIVATE)!!
