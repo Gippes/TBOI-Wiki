@@ -5,13 +5,13 @@ import android.graphics.drawable.Drawable
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v7.widget.RecyclerView
 import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
-import android.widget.ImageView.ScaleType.CENTER_CROP
 import android.widget.TextView
 
 /**
@@ -24,7 +24,7 @@ class ViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment = fragments[position]
 
-    override fun getPageTitle(position: Int): CharSequence = ""//titles[position]
+    override fun getPageTitle(position: Int): CharSequence = titles[position]
 
     override fun getCount(): Int = fragments.size
 
@@ -34,33 +34,23 @@ class ViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     }
 }
 
-class GridAdapter(private val context: Context, private val items: SparseArray<Item>) : BaseAdapter() {
+class GridAdapter(private val context: Context, private val clickListener: View.OnClickListener, private val images: ArrayList<Drawable>)
+    : RecyclerView.Adapter<GridAdapter.ItemViewHolder>() {
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
-        val imageView: ImageView?
-        if (convertView == null) {
-            imageView = ImageView(context)
-            imageView.layoutParams = ViewGroup.LayoutParams(150, 150)
-            imageView.scaleType = CENTER_CROP
-            imageView.setPadding(2, 2, 2, 2)
-        } else {
-            imageView = convertView as ImageView
-        }
-        imageView.setImageDrawable(Drawable.createFromStream(context.assets.open("images/${items[position].imageName}"), null))
-        return imageView
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ItemViewHolder =
+            ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.view_grid_element, parent, false), clickListener)
+
+    override fun getItemCount(): Int = images.size
+
+    override fun onBindViewHolder(holder: ItemViewHolder?, position: Int) {
+        holder?.apply { image.setImageDrawable(images[position]) }
     }
 
-    override fun getItem(position: Int): Any {
-        return items[position]
+    companion object
+    class ItemViewHolder(itemView: View?, clickListener: View.OnClickListener) : RecyclerView.ViewHolder(itemView) {
+        var image: ImageView = itemView!!.findViewById<ImageView>(R.id.image)!!.apply { setOnClickListener(clickListener) }
     }
 
-    override fun getItemId(position: Int): Long {
-        return items[position].id.toLong()
-    }
-
-    override fun getCount(): Int {
-        return items.size()
-    }
 }
 
 class ListAdapter(private val context: Context, val items: SparseArray<Item>) : BaseAdapter() {

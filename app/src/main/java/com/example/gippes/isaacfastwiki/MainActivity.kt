@@ -11,26 +11,24 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.SparseArray
 import android.widget.AdapterView.OnItemClickListener
-import android.widget.GridView
-import android.widget.ListView
 import com.example.gippes.isaacfastwiki.ViewType.GRID
 import com.example.gippes.isaacfastwiki.ViewType.LIST
+import kotlinx.android.synthetic.main.activity_main.*
 
 const val LOG_TAG = "gipTag"
 
 class MainActivity : AppCompatActivity(), LoaderCallbacks<SparseArray<Item>> {
+
     lateinit var mainLayout: CoordinatorLayout
     lateinit var config: Configuration
-    lateinit var itemInfoFragment: ItemInfoFragment
-    lateinit var gridItemsFragment: ItemsFragment<GridView>
-    lateinit var listItemsFragment: ItemsFragment<ListView>
-
     var items: SparseArray<Item> = SparseArray()
 
     val onItemClickListener = OnItemClickListener({ _, _, pos, _ ->
-        if (supportFragmentManager.findFragmentByTag(ItemInfoFragment.TAG) == null) {
+        var itemInfoFragment = supportFragmentManager.findFragmentByTag(ItemInfoFragment.TAG)
+        if (itemInfoFragment == null) {
             val args = Bundle()
             args.putInt("position", pos)
+            itemInfoFragment = ItemInfoFragment()
             itemInfoFragment.arguments = args
             supportFragmentManager.beginTransaction()
                     .add(R.id.main_activity_layout, itemInfoFragment, ItemInfoFragment.TAG)
@@ -39,21 +37,20 @@ class MainActivity : AppCompatActivity(), LoaderCallbacks<SparseArray<Item>> {
         }
     })
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         mainLayout = findViewById(R.id.main_activity_layout)
-        gridItemsFragment = buildFragment(R.layout.view_grid_items, R.id.grid_items)
-        listItemsFragment = buildFragment(R.layout.view_list_items, R.id.list_items)
-        itemInfoFragment = ItemInfoFragment()
 
         findViewById<Toolbar>(R.id.toolbar)?.let { setSupportActionBar(it) }
         val viewPager = findViewById<ViewPager>(R.id.viewPager)?.apply { setupViewPager(this) }
         findViewById<TabLayout>(R.id.tabs)?.apply {
             setupWithViewPager(viewPager)
-            getTabAt(0)?.setIcon(R.drawable.grid_icon)
-            getTabAt(1)?.setIcon(R.drawable.list_4)
+            viewPager?.offscreenPageLimit = 3
+//            getTabAt(0)?.setIcon(R.drawable.grid_icon)
+//            getTabAt(1)?.setIcon(R.drawable.list_4)
         }
 
         loaderManager.initLoader(1, Bundle.EMPTY, this)
@@ -66,8 +63,9 @@ class MainActivity : AppCompatActivity(), LoaderCallbacks<SparseArray<Item>> {
 
     private fun setupViewPager(pager: ViewPager) {
         pager.adapter = ViewPagerAdapter(supportFragmentManager).apply {
-            addFragment(gridItemsFragment, getString(R.string.grid))
-            addFragment(listItemsFragment, getString(R.string.list))
+            addFragment(GridFragment(), getString(R.string.items))
+            addFragment(GridFragment(), getString(R.string.trinkets))
+            addFragment(GridFragment(), getString(R.string.activ))
         }
     }
 
@@ -75,8 +73,7 @@ class MainActivity : AppCompatActivity(), LoaderCallbacks<SparseArray<Item>> {
 
     override fun onLoadFinished(loader: Loader<SparseArray<Item>>?, data: SparseArray<Item>?) {
         items = data!!
-        gridItemsFragment.updateView(onItemClickListener, { GridAdapter(this, items) })
-        listItemsFragment.updateView(onItemClickListener, { ListAdapter(this, items) })
+        supportFragmentManager.findFragmentByTag("android:switcher:${viewPager.id}:${0}")?.let { (it as GridFragment).updateView(items) }
     }
 
     override fun onLoaderReset(loader: Loader<SparseArray<Item>>?) {}

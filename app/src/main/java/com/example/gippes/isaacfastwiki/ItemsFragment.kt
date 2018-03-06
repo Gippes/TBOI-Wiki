@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.BaseAdapter
-import android.widget.GridView
 import android.widget.ListView
 
 /**
@@ -36,7 +35,7 @@ class ItemsFragment<T : AbsListView> : Fragment() {
             fragmentView = parent!!.findViewById(resId) as T
             fragmentView!!.onItemClickListener = (activity as MainActivity).onItemClickListener
             fragmentView!!.adapter = when (fragmentView) {
-                is GridView -> GridAdapter(activity, (activity as MainActivity).items)
+//                is GridView -> GridAdapter(activity, (activity as MainActivity).items)
                 is ListView -> ListAdapter(activity, (activity as MainActivity).items)
                 else -> null
             }

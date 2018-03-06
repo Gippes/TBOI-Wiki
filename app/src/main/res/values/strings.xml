@@ -10,4 +10,7 @@
     <string name="textview">Text view</string>
     <string name="message">\'message\'</string>
     <string name="search">поиск</string>
+    <string name="items">предметы</string>
+    <string name="trinkets">брелоки</string>
+    <string name="activ">активные</string>
 </resources>
