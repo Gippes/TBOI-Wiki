@@ -26,6 +26,7 @@ const val KEY_TAGS = "tags"
 
 class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
+    private var db: SQLiteDatabase? = null
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL("create table " + TABLE_ITEMS + " ("
                 + KEY_ID + " integer primary key,"
@@ -39,12 +40,14 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
                 + KEY_DESCRIPTION + " text,"
                 + KEY_UNLOCK_CONDITION + " text,"
                 + KEY_TAGS + " text);")
+        this.db = db
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        db?.execSQL("drop table if exists " + TABLE_ITEMS)
+        db?.execSQL("drop table if exists $TABLE_ITEMS")
         onCreate(db)
     }
+
 }
 
 

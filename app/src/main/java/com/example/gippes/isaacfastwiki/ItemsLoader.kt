@@ -1,11 +1,11 @@
 package com.example.gippes.isaacfastwiki
 
-import android.content.AsyncTaskLoader
 import android.content.ContentValues
 import android.content.Context
 import android.content.res.AssetManager
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.support.v4.content.AsyncTaskLoader
 import android.util.Log
 import android.util.SparseArray
 import com.google.gson.GsonBuilder
@@ -14,18 +14,12 @@ import java.io.InputStream
 
 /**
  *
- * Created by gippes on 18.02.18.
+ * Created by Igor Goryunov on 18.02.18.
  */
-
-
 class ItemsLoader(context: Context) : AsyncTaskLoader<SparseArray<Item>>(context) {
     private val assetManager: AssetManager = context.assets
-    private var items: SparseArray<Item> = SparseArray()
+    var items: SparseArray<Item> = SparseArray()
     val database: SQLiteDatabase = DBHelper(context).writableDatabase
-
-    companion object {
-        const val IMAGES_PATH = "file:///android_asset/images/"
-    }
 
     init {
         forceLoad()
@@ -77,24 +71,10 @@ class ItemsLoader(context: Context) : AsyncTaskLoader<SparseArray<Item>>(context
     private fun saveItemsToDataBase() {
         items = buildItems()
         val begin = System.currentTimeMillis()
-//        val statement = database.compileStatement("insert into $TABLE_ITEMS values(?,?,?,?,?,?,?,?,?,?,?);")
         database.beginTransaction()
         try {
             for (i in 0 until items.size()) {
                 val item = items.valueAt(i)
-//                statement.clearBindings()
-//                statement.bindLong(1, item.value.toLong())
-//                statement.bindString(2, item.title)
-//                statement.bindString(3, item.gameItemId)
-//                statement.bindString(4, item.message)
-//                statement.bindString(5, item.itemType)
-//                statement.bindString(6, item.buffType)
-//                statement.bindString(7, item.whereToFind)
-//                statement.bindString(8, item.description)
-//                statement.bindString(9, item.unlockCond)
-//                statement.bindString(10, item.tags)
-//                statement.bindString(11, item.imageName)
-//                statement.execute()
                 val cv = ContentValues()
                 cv.put(KEY_ID, item.id)
                 cv.put(KEY_TITLE, item.title)

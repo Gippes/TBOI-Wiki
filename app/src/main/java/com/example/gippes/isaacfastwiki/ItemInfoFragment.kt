@@ -22,7 +22,7 @@ class ItemInfoFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val viewGroup = inflater?.inflate(R.layout.view_item_info, container, false) as ViewGroup
         val pos = arguments.getInt("position")
-        items = (activity as MainActivity).items
+//        items = (activity as MainActivity).items
         if(items.size() != 0) {
             (viewGroup.findViewById<TextView>(R.id.description_item))?.text = items.get(pos)?.description?.replace("•", "\n\n•")
             (viewGroup.findViewById<TextView>(R.id.title))?.text = items.get(pos)?.title

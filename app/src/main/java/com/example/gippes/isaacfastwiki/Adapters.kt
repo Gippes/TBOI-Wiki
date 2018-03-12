@@ -34,7 +34,7 @@ class ViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     }
 }
 
-class GridAdapter(private val context: Context, private val clickListener: View.OnClickListener, private val images: ArrayList<Drawable>)
+class GridAdapter(private val context: Context, val images: ArrayList<Drawable>, private val clickListener: View.OnClickListener?)
     : RecyclerView.Adapter<GridAdapter.ItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ItemViewHolder =
@@ -46,11 +46,9 @@ class GridAdapter(private val context: Context, private val clickListener: View.
         holder?.apply { image.setImageDrawable(images[position]) }
     }
 
-    companion object
-    class ItemViewHolder(itemView: View?, clickListener: View.OnClickListener) : RecyclerView.ViewHolder(itemView) {
-        var image: ImageView = itemView!!.findViewById<ImageView>(R.id.image)!!.apply { setOnClickListener(clickListener) }
+    class ItemViewHolder(itemView: View?, clickListener: View.OnClickListener?) : RecyclerView.ViewHolder(itemView) {
+        var image: ImageView = itemView!!.findViewById<ImageView>(R.id.image)!!.apply { clickListener?.let { setOnClickListener(clickListener) } }
     }
-
 }
 
 class ListAdapter(private val context: Context, val items: SparseArray<Item>) : BaseAdapter() {

@@ -13,4 +13,6 @@
     <string name="items">предметы</string>
     <string name="trinkets">брелоки</string>
     <string name="activ">активные</string>
+    <string name="passive">пассивные</string>
+    <string name="all">все</string>
 </resources>
