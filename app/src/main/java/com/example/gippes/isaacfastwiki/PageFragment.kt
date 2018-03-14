@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,21 +17,21 @@ import android.view.ViewGroup
  * Created by Igor Goryunov on 12.03.18.
  */
 
-class GridPageFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
-    private var layout: View? = null
+class PageFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
     private var itemsView: RecyclerView? = null
     private var images = arrayListOf<Drawable>()
     var sqlQuery = "select image_name from items order by _id asc"
     var onClickListener: View.OnClickListener? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        if (layout == null) {
-            layout = inflater!!.inflate(R.layout.view_grid_items, container, false)!!.findViewById(R.id.grid_items)
-            itemsView = layout!!.findViewById(R.id.grid_items)
+        if (itemsView == null) {
+            itemsView = RecyclerView(activity)
+            itemsView!!.layoutManager = GridLayoutManager(activity, 6)
+            itemsView!!.setHasFixedSize(true)
             loaderManager.initLoader(0, Bundle.EMPTY, this)
             retainInstance = true
         }
-        return layout!!
+        return itemsView!!
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> = PageDataLoader(activity, sqlQuery)
@@ -44,7 +45,7 @@ class GridPageFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
                     images.add(Drawable.createFromStream(activity.assets.open("images/${cursor.getString(index)}"), null))
                 } while (cursor.moveToNext())
                 Log.i(LOG_TAG, "Loading time items from db - ${System.currentTimeMillis() - begin}ms")
-                itemsView!!.adapter = GridAdapter(activity, images, onClickListener)
+                itemsView!!.adapter = ItemsListAdapter(activity, images, onClickListener)
             }
         }
     }

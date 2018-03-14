@@ -1,14 +1,11 @@
 package com.example.gippes.isaacfastwiki
 
-import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
-import com.example.gippes.isaacfastwiki.ViewType.GRID
-import com.example.gippes.isaacfastwiki.ViewType.LIST
 
 const val LOG_TAG = "gipTag"
 
@@ -17,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         var itemInfoFragment = supportFragmentManager.findFragmentByTag(ItemInfoFragment.TAG)
         if (itemInfoFragment == null) {
             val args = Bundle()
-            args.putInt("position", view.verticalScrollbarPosition)
+            args.putInt("position", view.tag as Int)
             itemInfoFragment = ItemInfoFragment()
             itemInfoFragment.arguments = args
             supportFragmentManager.beginTransaction()
@@ -46,31 +43,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupViewPager(pager: ViewPager) {
         pager.adapter = ViewPagerAdapter(supportFragmentManager).apply {
-            var fragment = GridPageFragment()
+            var fragment = PageFragment()
             fragment.onClickListener = onClickListener
             addFragment(fragment, getString(R.string.all))
 
-            fragment = GridPageFragment()
+            fragment = PageFragment()
             fragment.sqlQuery = "select image_name from items where buff_type like '%Активируемый%' order by _id asc"
             fragment.onClickListener = onClickListener
             addFragment(fragment, getString(R.string.activ))
 
-            fragment = GridPageFragment()
+            fragment = PageFragment()
             fragment.sqlQuery = "select image_name from items where buff_type like '%Пассивный%' order by _id asc"
             fragment.onClickListener = onClickListener
             addFragment(fragment, getString(R.string.passive))
         }
-    }
-
-    inner class Configuration {
-        val preferences = this@MainActivity.getSharedPreferences("isaac_config", Context.MODE_PRIVATE)!!
-        var viewType
-            set(type) = preferences.edit().putInt("view_type", type.value).apply()
-            get() = when (preferences.getInt("view_type", GRID.value)) {
-                GRID.value -> GRID
-                LIST.value -> LIST
-                else -> GRID
-            }
     }
 }
 

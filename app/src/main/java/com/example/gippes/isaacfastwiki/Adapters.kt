@@ -34,8 +34,8 @@ class ViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     }
 }
 
-class GridAdapter(private val context: Context, val images: ArrayList<Drawable>, private val clickListener: View.OnClickListener?)
-    : RecyclerView.Adapter<GridAdapter.ItemViewHolder>() {
+class ItemsListAdapter(private val context: Context, val images: ArrayList<Drawable>, private val clickListener: View.OnClickListener?)
+    : RecyclerView.Adapter<ItemsListAdapter.ItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ItemViewHolder =
             ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.view_grid_element, parent, false), clickListener)

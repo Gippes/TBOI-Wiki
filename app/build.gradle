@@ -38,4 +38,11 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect:1.2.30"
     compile 'com.android.support:design:26.1.0'
     compile "org.jetbrains.anko:anko:$anko_version"
+    compile "org.jetbrains.anko:anko-commons:$anko_version"
+    compile "org.jetbrains.anko:anko-design:$anko_version"
+}
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
 }

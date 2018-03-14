@@ -9,4 +9,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+    <style name="SplashTheme" parent="IsaacAppTheme">
+        <item name="android:windowBackground">@drawable/splash_activity_background</item>
+    </style>
 </resources>

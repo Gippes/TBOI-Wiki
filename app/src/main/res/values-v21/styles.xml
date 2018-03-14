@@ -10,4 +10,7 @@
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
     </style>
 
+    <style name="SplashTheme" parent="IsaacAppTheme">
+        <item name="android:windowBackground">@drawable/splash_activity_background</item>
+    </style>
 </resources>
