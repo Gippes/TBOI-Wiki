@@ -2,7 +2,7 @@
 
     <style name="IsaacAppTheme" parent="IsaacAppTheme.Base" />
 
-    <style name="IsaacAppTheme.Base" parent="Theme.Design.NoActionBar">
+    <style name="IsaacAppTheme.Base" parent="Theme.AppCompat.NoActionBar">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/colorPrimary</item>

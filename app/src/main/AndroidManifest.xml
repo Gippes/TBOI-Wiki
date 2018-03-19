@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.gippes.isaacfastwiki">
 
     <application
@@ -21,7 +22,12 @@
             android:name=".MainActivity"
             android:theme="@style/IsaacAppTheme" />
 
-        <!--android:name=".ItemInfoFragment"-->
+        <activity android:name=".ItemInfoActivity"
+            android:parentActivityName=".MainActivity"
+            tools:targetApi="jelly_bean">
+        </activity>
+
+        <!--android:namItemInfoActivityment"-->
         <!--android:label="@string/title_activity_item"-->
         <!--android:parentActivityName=".MainActivity"-->
         <!--android:theme="@style/Base.Theme.AppCompat.Dialog"-->

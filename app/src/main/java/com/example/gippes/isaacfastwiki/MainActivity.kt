@@ -10,27 +10,15 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.intentFor
 
 const val LOG_TAG = "gipTag"
 
 class MainActivity : AppCompatActivity() {
 
     val onClickListener = View.OnClickListener({ view ->
-        var itemInfoFragment = supportFragmentManager.findFragmentByTag(ItemInfoFragment.TAG)
-        if (itemInfoFragment == null) {
-            val args = Bundle()
-            args.putInt("id", view.tag as Int)
-            itemInfoFragment = ItemInfoFragment()
-            itemInfoFragment.arguments = args
-            if (supportFragmentManager.findFragmentByTag(ItemInfoFragment.TAG) == null) {
-                supportFragmentManager.beginTransaction()
-                        .add(R.id.main_activity_layout, itemInfoFragment, ItemInfoFragment.TAG)
-                        .addToBackStack(null)
-                        .commit()
-            }
-        }
+        startActivity(intentFor<ItemInfoActivity>("id" to view.tag))
     })
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,15 +37,15 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<BottomNavigationView>(R.id.navigation)!!.setOnNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.nvgt_items->{
+                R.id.nvgt_items -> {
                     toolbar.setTitle(R.string.items)
                     true
                 }
-                R.id.nvgt_trinkets->{
+                R.id.nvgt_trinkets -> {
                     toolbar.setTitle(R.string.trinkets)
-                true
+                    true
                 }
-                R.id.nvgt_monsters->{
+                R.id.nvgt_monsters -> {
                     toolbar.setTitle(R.string.monsters)
                     true
                 }
@@ -65,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                     toolbar.setTitle(R.string.characters)
                     true
                 }
-                R.id.nvgt_objects->{
+                R.id.nvgt_objects -> {
                     toolbar.setTitle(R.string.objects)
                     true
                 }
@@ -77,7 +65,7 @@ class MainActivity : AppCompatActivity() {
             (this as PageFragment).update(onClickListener)
         }
 
-        supportFragmentManager.findFragmentByTag(ItemInfoFragment.TAG)?.let {
+        supportFragmentManager.findFragmentByTag(ItemInfoActivity.TAG)?.let {
             supportFragmentManager.beginTransaction().remove(it).commit()
             supportFragmentManager.popBackStack()
         }
