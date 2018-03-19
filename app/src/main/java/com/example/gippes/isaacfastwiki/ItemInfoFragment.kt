@@ -3,7 +3,6 @@ package com.example.gippes.isaacfastwiki
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,17 +17,19 @@ class ItemInfoFragment : Fragment() {
         const val TAG = "item_info_fragment"
     }
 
-    var items : SparseArray<Item> = SparseArray()
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val viewGroup = inflater?.inflate(R.layout.view_item_info, container, false) as ViewGroup
-        val pos = arguments.getInt("position")
-//        items = (refActivity as MainActivity).items
-        if(items.size() != 0) {
-            (viewGroup.findViewById<TextView>(R.id.description_item))?.text = items.get(pos)?.description?.replace("•", "\n\n•")
-            (viewGroup.findViewById<TextView>(R.id.title))?.text = items.get(pos)?.title
-            (viewGroup.findViewById<TextView>(R.id.message))?.text = items.get(pos)?.message
-            (viewGroup.findViewById<ImageView>(R.id.image_item))?.setImageDrawable(Drawable.createFromStream(activity.assets.open("images/${items[pos]?.imageName}"), null))
+        val id = arguments.getInt("id")
+        activity.database.readableDatabase.use {
+            it.beginTransaction()
+            it.getValueById<String>(KEY_DESCRIPTION, id)?.let { (viewGroup.findViewById<TextView>(R.id.description_item))?.text = it.replace("•", "\n\n•") }
+            it.getValueById<String>(KEY_TITLE, id)?.let { (viewGroup.findViewById<TextView>(R.id.text))?.text = it}
+            it.getValueById<String>(KEY_MESSAGE, id)?.let { (viewGroup.findViewById<TextView>(R.id.message))?.text = it}
+            it.getValueById<String>(KEY_IMAGE_NAME, id)?.let { (viewGroup.findViewById<ImageView>(R.id.image_item))?.setImageDrawable(Drawable.createFromStream(activity.assets.open("images/$it"), null))}
+            it.setTransactionSuccessful()
+            it.endTransaction()
         }
         return viewGroup
     }
 }
+

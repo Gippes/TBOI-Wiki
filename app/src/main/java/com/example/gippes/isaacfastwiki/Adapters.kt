@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
@@ -34,21 +35,36 @@ class ViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     }
 }
 
-class ItemsListAdapter(private val context: Context, val images: ArrayList<Drawable>, private val clickListener: View.OnClickListener?)
+class ItemsListAdapter(private val context: Context,
+                       val data: ArrayList<IdAndImage>,
+                       var clickListener: View.OnClickListener? = null)
     : RecyclerView.Adapter<ItemsListAdapter.ItemViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ItemViewHolder =
-            ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.view_grid_element, parent, false), clickListener)
 
-    override fun getItemCount(): Int = images.size
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ItemViewHolder {
+        Log.d(LOG_TAG, "create view holder")
+        return ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.view_grid_element, parent, false))
+    }
+
+    override fun getItemCount(): Int = data.size
 
     override fun onBindViewHolder(holder: ItemViewHolder?, position: Int) {
-        holder?.apply { image.setImageDrawable(images[position]) }
+        Log.d(LOG_TAG, "bind view holder - $position")
+        holder?.apply {
+            image.setImageDrawable(data[position].image)
+            itemView.tag = data[position].id
+            itemView.setOnClickListener(clickListener)
+        }
     }
 
-    class ItemViewHolder(itemView: View?, clickListener: View.OnClickListener?) : RecyclerView.ViewHolder(itemView) {
-        var image: ImageView = itemView!!.findViewById<ImageView>(R.id.image)!!.apply { clickListener?.let { setOnClickListener(clickListener) } }
+    class ItemViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+        var image: ImageView = itemView!!.findViewById(R.id.image)!!
     }
+}
+
+class IdAndImage(val id: Int, val image: Drawable) {
+    operator fun component1(): Int = id
+    operator fun component2(): Drawable = image
 }
 
 class ListAdapter(private val context: Context, val items: SparseArray<Item>) : BaseAdapter() {
@@ -59,7 +75,7 @@ class ListAdapter(private val context: Context, val items: SparseArray<Item>) : 
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             view = inflater.inflate(R.layout.view_list_element, parent, false)
         }
-        view?.findViewById<ImageView>(R.id.image)?.setImageDrawable(Drawable.createFromStream(context.assets.open("images/${items[position].imageName}"), items[position].imageName))
+        view?.findViewById<ImageView>(R.id.image)?.setImageDrawable(Drawable.createFromStream(context.assets.open("data/${items[position].imageName}"), items[position].imageName))
         view?.findViewById<TextView>(R.id.title)?.text = items[position].title
         view?.findViewById<TextView>(R.id.message)?.text = items[position].message
         return view

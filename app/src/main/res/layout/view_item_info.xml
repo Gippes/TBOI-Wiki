@@ -1,75 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/description"
+    android:background="@color/bgBottomNavigationBar"
     android:orientation="vertical"
     tools:context="com.example.gippes.isaacfastwiki.ItemInfoFragment">
 
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/description"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/description_item"
+        app:layout_constraintStart_toStartOf="@+id/description_item"
+        app:layout_constraintTop_toBottomOf="@+id/message" />
 
     <ImageView
         android:id="@+id/image_item"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
         android:contentDescription="@string/item_image"
         android:padding="5dp"
         android:src="@android:drawable/screen_background_light_transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.153"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.191"
         tools:src="@drawable/items_650" />
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:ems="10"
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/image_item"
-        app:layout_constraintTop_toBottomOf="@+id/image_item"
+        app:layout_constraintBottom_toTopOf="@+id/image_item"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:text="Mom's Locket" />
 
     <TextView
         android:id="@+id/message"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:textAlignment="center"
         android:textColor="@color/messageText"
         android:textSize="16sp"
         android:textStyle="italic"
-        app:layout_constraintStart_toStartOf="@+id/image_item"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_item"
         tools:text="&quot;you feel her love&quot;" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="80dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="8dp">
 
-        <TextView
-            android:id="@+id/description_item"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintStart_toStartOf="@+id/image_item"
-            app:layout_constraintTop_toBottomOf="@+id/editText"
-            tools:text="• Лечит вас на пол сердца каждый раз когда вы используете ключ, открывая сундук или комнату
+    <TextView
+        android:id="@+id/description_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="84dp"
+        app:layout_constraintTop_toBottomOf="@+id/message"
+        tools:layout_editor_absoluteX="16dp"
+        tools:text="• Лечит вас на пол сердца каждый раз когда вы используете ключ, открывая сундук или комнату
         • Заменяет все половинки сердец на полные." />
-    </ScrollView>
 
-</LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

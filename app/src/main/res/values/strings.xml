@@ -10,9 +10,12 @@
     <string name="textview">Text view</string>
     <string name="message">\'message\'</string>
     <string name="search">поиск</string>
-    <string name="items">предметы</string>
-    <string name="trinkets">брелоки</string>
+    <string name="items">Артефакты</string>
     <string name="activ">активные</string>
     <string name="passive">пассивные</string>
     <string name="all">все</string>
+    <string name="trinkets">Брелоки</string>
+    <string name="monsters">Монстры</string>
+    <string name="characters">Персонажи</string>
+    <string name="objects">Объекты</string>
 </resources>

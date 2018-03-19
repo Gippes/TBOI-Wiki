@@ -19,9 +19,18 @@ import android.view.ViewGroup
 
 class PageFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
     private var itemsView: RecyclerView? = null
-    private var images = arrayListOf<Drawable>()
-    var sqlQuery = "select image_name from items order by _id asc"
-    var onClickListener: View.OnClickListener? = null
+    private var data = arrayListOf<IdAndImage>()
+    lateinit var sqlQuery: String
+    lateinit var onClickListener: View.OnClickListener
+
+    companion object {
+        fun create(sqlQuery: String, clickListener: View.OnClickListener): Fragment{
+            val instance = PageFragment()
+            instance.sqlQuery = sqlQuery
+            instance.onClickListener = clickListener
+            return instance
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         if (itemsView == null) {
@@ -40,13 +49,20 @@ class PageFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
         if (cursor != null && itemsView!!.adapter == null) {
             if (cursor.moveToFirst()) {
                 val begin = System.currentTimeMillis()
-                val index = cursor.getColumnIndex(KEY_IMAGE_NAME)
                 do {
-                    images.add(Drawable.createFromStream(activity.assets.open("images/${cursor.getString(index)}"), null))
+                    data.add(IdAndImage(cursor.getInt(0),
+                            Drawable.createFromStream(activity.assets.open("images/${cursor.getString(1)}"), null)))
                 } while (cursor.moveToNext())
                 Log.i(LOG_TAG, "Loading time items from db - ${System.currentTimeMillis() - begin}ms")
-                itemsView!!.adapter = ItemsListAdapter(activity, images, onClickListener)
+                itemsView!!.adapter = ItemsListAdapter(activity, data, onClickListener)
             }
+        }
+    }
+
+    fun update(clickListener: View.OnClickListener) {
+        (itemsView!!.adapter as ItemsListAdapter).apply {
+            this.clickListener = clickListener
+            notifyDataSetChanged()
         }
     }
 

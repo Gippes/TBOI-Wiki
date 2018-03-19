@@ -4,10 +4,11 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.res.AssetManager
 import android.database.sqlite.SQLiteDatabase
-import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import android.util.SparseArray
 import com.google.gson.GsonBuilder
+import org.jetbrains.anko.db.ManagedSQLiteOpenHelper
+import org.jetbrains.anko.db.select
 import java.io.IOException
 import java.io.InputStream
 
@@ -15,7 +16,7 @@ import java.io.InputStream
  * Created by gippes on 18.02.18.
  */
 const val DATABASE_NAME = "isaac_db"
-const val DATABASE_VERSION = 17
+const val DATABASE_VERSION = 18
 const val TABLE_ITEMS = "items"
 const val KEY_ID = "_id"
 const val KEY_TITLE = "name"
@@ -29,8 +30,20 @@ const val KEY_DESCRIPTION = "description"
 const val KEY_UNLOCK_CONDITION = "unlockCond"
 const val KEY_TAGS = "tags"
 
-class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class DBHelper(context: Context) : ManagedSQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     val assetManager: AssetManager = context.assets
+
+    companion object {
+        private var instance: DBHelper? = null
+
+        @Synchronized
+        fun getInstance(ctx: Context): DBHelper {
+            if (instance == null) {
+                instance = DBHelper(ctx.applicationContext)
+            }
+            return instance!!
+        }
+    }
 
     override fun onCreate(db: SQLiteDatabase?) {
         db!!.execSQL("create table " + TABLE_ITEMS + " ("
@@ -124,6 +137,19 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         return res
     }
 }
+
+@Suppress("IMPLICIT_CAST_TO_ANY")
+inline fun <reified T> SQLiteDatabase.getValueById(column: String, id: Int): T? = select(TABLE_ITEMS).column(column).whereArgs("_id = {id}", "id" to id).exec {
+    moveToFirst()
+    when (T::class) {
+        String::class -> getString(0)
+        Int::class -> getInt(0)
+        else -> null
+    } as T
+}
+
+val Context.database: DBHelper
+    get() = DBHelper.getInstance(applicationContext)
 
 data class Item(var id: Int, var title: String, var gameItemId: String, var message: String, var itemType: String,
                 var buffType: String, var whereToFind: String, var description: String, var unlockCond: String?, var tags: String, var imageName: String)
