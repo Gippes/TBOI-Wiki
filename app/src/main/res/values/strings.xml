@@ -18,4 +18,5 @@
     <string name="monsters">Монстры</string>
     <string name="characters">Персонажи</string>
     <string name="objects">Объекты</string>
+    <string name="cards">Карты</string>
 </resources>

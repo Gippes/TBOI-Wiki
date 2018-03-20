@@ -4,7 +4,8 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.view.PagerAdapter
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.util.SparseArray
@@ -19,19 +20,30 @@ import android.widget.TextView
  * Created by Igor Goryunov on 01.03.18.
  */
 
-class ViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-    val fragments = arrayListOf<Fragment>()
-    val titles = arrayListOf<String>()
+class ViewPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+    private val mFragments = arrayListOf<PageFragment>()
+    private val mTitles = arrayListOf<String>()
 
-    override fun getItem(position: Int): Fragment = fragments[position]
+    override fun getItem(position: Int): Fragment = mFragments[position]
 
-    override fun getPageTitle(position: Int): CharSequence = titles[position]
+    override fun getPageTitle(position: Int): CharSequence = mTitles[position]
 
-    override fun getCount(): Int = fragments.size
+    override fun getCount(): Int = mFragments.size
 
-    fun addFragment(fragment: Fragment, title: String) {
-        fragments.add(fragment)
-        titles.add(title)
+    override fun getItemPosition(`object`: Any?): Int {
+        val fragment = `object` as PageFragment
+        val pos = mTitles.indexOf(fragment.title)
+        return if(pos == -1) PagerAdapter.POSITION_NONE else pos
+    }
+
+    fun addFragment(fragment: PageFragment) {
+        mFragments.add(fragment)
+        mTitles.add(fragment.title)
+    }
+
+    fun clear() {
+        mFragments.clear()
+        mTitles.clear()
     }
 }
 

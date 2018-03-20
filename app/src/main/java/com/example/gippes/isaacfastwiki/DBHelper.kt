@@ -70,7 +70,7 @@ class DBHelper(context: Context) : ManagedSQLiteOpenHelper(context, DATABASE_NAM
         onCreate(db)
     }
 
-    private fun saveItemsToDataBase(database: SQLiteDatabase) {
+    internal fun saveItemsToDataBase(database: SQLiteDatabase) {
         val items = buildItems()
         val begin = System.currentTimeMillis()
         database.beginTransaction()
@@ -99,7 +99,7 @@ class DBHelper(context: Context) : ManagedSQLiteOpenHelper(context, DATABASE_NAM
         }
     }
 
-    private fun buildItems(): SparseArray<Item> {
+    internal fun buildItems(): SparseArray<Item> {
         val itemsMap = SparseArray<Item>()
         var inputStream: InputStream? = null
         try {
@@ -122,7 +122,7 @@ class DBHelper(context: Context) : ManagedSQLiteOpenHelper(context, DATABASE_NAM
         return itemsMap
     }
 
-    private fun getImageNames(): SparseArray<String> {
+    internal fun getImageNames(): SparseArray<String> {
         val res = SparseArray<String>()
         assetManager.list("images")
                 .filter { it.contains("items_") }

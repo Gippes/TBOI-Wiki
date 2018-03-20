@@ -18,49 +18,51 @@ import android.view.ViewGroup
  */
 
 class PageFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
-    private var itemsView: RecyclerView? = null
-    private var data = arrayListOf<IdAndImage>()
-    lateinit var sqlQuery: String
-    lateinit var onClickListener: View.OnClickListener
+    private var mItemsView: RecyclerView? = null
+    private var mData = arrayListOf<IdAndImage>()
+    lateinit var title: String
+    private lateinit var mSqlQuery: String
+    private lateinit var mOnClickListener: View.OnClickListener
 
     companion object {
-        fun create(sqlQuery: String, clickListener: View.OnClickListener): Fragment{
+        fun create(sqlQuery: String, clickListener: View.OnClickListener, title: String = ""): PageFragment {
             val instance = PageFragment()
-            instance.sqlQuery = sqlQuery
-            instance.onClickListener = clickListener
+            instance.mSqlQuery = sqlQuery
+            instance.mOnClickListener = clickListener
+            instance.title = title
             return instance
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        if (itemsView == null) {
-            itemsView = RecyclerView(activity)
-            itemsView!!.layoutManager = GridLayoutManager(activity, 6)
-            itemsView!!.setHasFixedSize(true)
+        if (mItemsView == null) {
+            mItemsView = RecyclerView(activity)
+            mItemsView!!.layoutManager = GridLayoutManager(activity, 6)
+            mItemsView!!.setHasFixedSize(true)
             loaderManager.initLoader(0, Bundle.EMPTY, this)
             retainInstance = true
         }
-        return itemsView!!
+        return mItemsView!!
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> = PageDataLoader(activity, sqlQuery)
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> = PageDataLoader(activity, mSqlQuery)
 
     override fun onLoadFinished(loader: Loader<Cursor>?, cursor: Cursor?) {
-        if (cursor != null && itemsView!!.adapter == null) {
+        if (cursor != null && mItemsView!!.adapter == null) {
             if (cursor.moveToFirst()) {
                 val begin = System.currentTimeMillis()
                 do {
-                    data.add(IdAndImage(cursor.getInt(0),
+                    mData.add(IdAndImage(cursor.getInt(0),
                             Drawable.createFromStream(activity.assets.open("images/${cursor.getString(1)}"), null)))
                 } while (cursor.moveToNext())
                 Log.i(LOG_TAG, "Loading time items from db - ${System.currentTimeMillis() - begin}ms")
-                itemsView!!.adapter = ItemsListAdapter(activity, data, onClickListener)
+                mItemsView!!.adapter = ItemsListAdapter(activity, mData, mOnClickListener)
             }
         }
     }
 
     fun update(clickListener: View.OnClickListener) {
-        (itemsView!!.adapter as ItemsListAdapter).apply {
+        (mItemsView!!.adapter as ItemsListAdapter).apply {
             this.clickListener = clickListener
             notifyDataSetChanged()
         }
