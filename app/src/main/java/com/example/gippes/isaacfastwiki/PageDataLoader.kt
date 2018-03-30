@@ -2,7 +2,6 @@ package com.example.gippes.isaacfastwiki
 
 import android.content.Context
 import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
 import android.support.v4.content.CursorLoader
 
 /**
@@ -11,20 +10,21 @@ import android.support.v4.content.CursorLoader
  */
 
 class PageDataLoader(ctx: Context, val sqlQuery: String) : CursorLoader(ctx) {
-    val db: SQLiteDatabase = DBHelper(context).writableDatabase
+//    val db: SQLiteDatabase = DBHelper(context).writableDatabase
     init {
         forceLoad()
     }
 
     override fun loadInBackground(): Cursor? {
-        db.beginTransaction()
-        val cursor: Cursor?
-        try {
-            cursor = db.rawQuery(sqlQuery, arrayOf())
-            db.setTransactionSuccessful()
-        }finally {
-            db.endTransaction()
-        }
-        return cursor
+//        db.beginTransaction()
+//        val cursor: Cursor?
+//        try {
+//            cursor = db.rawQuery(sqlQuery, arrayOf())
+//            db.setTransactionSuccessful()
+//        }finally {
+//            db.endTransaction()
+//        }
+//        return cursor
+        return null
     }
 }

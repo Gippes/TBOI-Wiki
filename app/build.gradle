@@ -4,7 +4,10 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
-ext.anko_version='0.10.4'
+apply plugin: 'kotlin-kapt'
+
+
+ext.anko_version = '0.10.4'
 
 android {
     compileSdkVersion 27
@@ -23,29 +26,54 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:appcompat-v7:27.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support:design:27.1.0'
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation "android.arch.lifecycle:viewmodel:1.1.1"
+    implementation "android.arch.lifecycle:livedata:1.1.1"
+//    implementation "android.arch.lifecycle:common-java8:1.1.1"
+    implementation "android.arch.persistence.room:runtime:1.0.0"
+    implementation "android.arch.paging:runtime:1.0.0-alpha7"
+    implementation 'com.google.code.gson:gson:2.8.0'
+    implementation 'com.google.dagger:dagger:2.11'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.2.31"
+    implementation "org.jetbrains.anko:anko:$anko_version"
+    implementation "org.jetbrains.anko:anko-commons:$anko_version"
+    implementation "org.jetbrains.anko:anko-design:$anko_version"
+
     testImplementation 'junit:junit:4.12'
+    testImplementation "android.arch.core:core-testing:1.1.1"
+    testImplementation "android.arch.persistence.room:testing:1.0.0"
+    testImplementation "org.robolectric:robolectric:3.8"
+
     androidTestImplementation 'org.mockito:mockito-core:2.10.0'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test:testing-support-lib:0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    compile 'com.google.code.gson:gson:2.8.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    implementation 'com.android.support:design:26.1.0'
-    compile "org.jetbrains.kotlin:kotlin-reflect:1.2.30"
-    compile 'com.android.support:design:26.1.0'
-    compile "org.jetbrains.anko:anko:$anko_version"
-    compile "org.jetbrains.anko:anko-commons:$anko_version"
-    compile "org.jetbrains.anko:anko-design:$anko_version"
+    androidTestImplementation 'com.android.support.test:runner:1.0.2-alpha1'
+//    androidTestImplementation 'com.android.support.test:testing-support-lib:0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2-alpha1'
+
+
+//    testCompile 'junit:junit:4.12'
+
+    kapt "android.arch.lifecycle:compiler:1.1.1"
+    kapt "android.arch.persistence.room:compiler:1.0.0"
+    kapt "com.google.dagger:dagger-compiler:2.11"
+    kaptTest "com.google.dagger:dagger-compiler:2.11"
 }
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
-}
+
+//kotlin {
+//    experimental {
+//        coroutines "enable"
+//    }
+//}

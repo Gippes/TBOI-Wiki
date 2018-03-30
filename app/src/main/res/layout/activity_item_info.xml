@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/bgBottomNavigationBar"
     android:orientation="vertical"
-    tools:context="com.example.gippes.isaacfastwiki.ItemInfoActivity">
+    tools:context="com.example.gippes.isaacfastwiki.ui.ItemInfoActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
