@@ -24,7 +24,7 @@ const val LOG_TAG = "gipTag"
 
 class MainActivity : AppCompatActivity() {
 
-    val onClickListener = View.OnClickListener({ view ->
+    private val onClickListener = View.OnClickListener({ view ->
         startActivity(intentFor<ItemInfoActivity>("id" to view.tag))
     })
 
@@ -41,9 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         val viewPager = findViewById<ViewPager>(R.id.viewPager)!!.setup(this,
                 PageFragment.create(dataHolder.activeItems, onClickListener, getString(R.string.activ)),
-                PageFragment.create(dataHolder.passiveItems, onClickListener, getString(R.string.passive)),
-                PageFragment.create(dataHolder.trinkets, onClickListener, getString(R.string.trinkets)),
-                PageFragment.create(dataHolder.cards, onClickListener, getString(R.string.cards))
+                PageFragment.create(dataHolder.passiveItems, onClickListener, getString(R.string.passive))
         )
 
         val tabs = findViewById<TabLayout>(R.id.tabs)!!.apply {
@@ -113,10 +111,10 @@ class MainActivity : AppCompatActivity() {
 //            (this as PageFragment).update(onClickListener)
 //        }
 
-        supportFragmentManager.findFragmentByTag(ItemInfoActivity.TAG)?.let {
-            supportFragmentManager.beginTransaction().remove(it).commit()
-            supportFragmentManager.popBackStack()
-        }
+//        supportFragmentManager.findFragmentByTag(ItemInfoActivity.TAG)?.let {
+//            supportFragmentManager.beginTransaction().remove(it).commit()
+//            supportFragmentManager.popBackStack()
+//        }
     }
 }
 

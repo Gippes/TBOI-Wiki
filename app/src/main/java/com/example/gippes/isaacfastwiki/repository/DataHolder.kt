@@ -3,6 +3,7 @@ package com.example.gippes.isaacfastwiki.repository
 import android.arch.lifecycle.*
 import com.example.gippes.isaacfastwiki.App
 import com.example.gippes.isaacfastwiki.db.Element
+import com.example.gippes.isaacfastwiki.db.Item
 import com.example.gippes.isaacfastwiki.db.ItemDao
 import javax.inject.Inject
 
@@ -10,12 +11,12 @@ import javax.inject.Inject
  * Created by Igor Goryunov on 21.03.18.
  */
 
-class DataHolder @Inject constructor(val mItemDao: ItemDao, val assetUtils: AssetUtils) {
+class DataHolder @Inject constructor(private val mItemDao: ItemDao, val assetUtils: AssetUtils) {
 
-    val activeItems: LiveData<ArrayList<Element>> = mItemDao.getElementsByBuffType("%Активируемый%")!!.transform().initImages()
-    val passiveItems: LiveData<ArrayList<Element>> = mItemDao.getElementsByBuffType("%Пассивный%")!!.transform().initImages()
-    val trinkets: LiveData<ArrayList<Element>> = mItemDao.getElementsByItemType("trn")!!.transform().initImages()
-    val cards: LiveData<ArrayList<Element>> = mItemDao.getElementsByItemType("card")!!.transform().initImages()
+    val activeItems: LiveData<ArrayList<Element>> = mItemDao.getElementsByBuffType("%Активируемый%").transform().initImages()
+    val passiveItems: LiveData<ArrayList<Element>> = mItemDao.getElementsByBuffType("%Пассивный%").transform().initImages()
+    val trinkets: LiveData<ArrayList<Element>> = mItemDao.getElementsByItemType("trn").transform().initImages()
+    val cards: LiveData<ArrayList<Element>> = mItemDao.getElementsByItemType("card").transform().initImages()
 
 
     private fun LiveData<ArrayList<Element>>.initImages(): LiveData<ArrayList<Element>> {
@@ -32,6 +33,8 @@ class DataHolder @Inject constructor(val mItemDao: ItemDao, val assetUtils: Asse
             it.toCollection(ArrayList())
         })
     }
+
+    fun getItemById(id: Int): LiveData<Item> = mItemDao.getItemById(id)
 }
 
 class MainViewModel : ViewModel() {

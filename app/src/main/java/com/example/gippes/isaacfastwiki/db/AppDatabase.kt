@@ -24,13 +24,13 @@ interface ItemDao {
     fun getAll(): List<Item>?
 
     @Query("SELECT $ID,$TITLE,$MESSAGE,$IMAGE_NAME FROM item WHERE $BUFF_TYPE LIKE :buffType ORDER by $ID ASC")
-    fun getElementsByBuffType(buffType: String): LiveData<List<Element>>?
+    fun getElementsByBuffType(buffType: String): LiveData<List<Element>>
 
     @Query("SELECT $ID,$TITLE,$MESSAGE,$IMAGE_NAME FROM item WHERE $ITEM_TYPE LIKE :itemType ORDER by $ID ASC")
-    fun getElementsByItemType(itemType: String): LiveData<List<Element>>?
+    fun getElementsByItemType(itemType: String): LiveData<List<Element>>
 
     @Query("SELECT * FROM item WHERE $ID = :id")
-    fun getItemById(id: Int): Item?
+    fun getItemById(id: Int): LiveData<Item>
 
     @Insert
     fun insert(vararg items: Item)

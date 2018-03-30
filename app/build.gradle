@@ -27,6 +27,7 @@ android {
         }
     }
     testOptions {
+        animationsDisabled = true
         unitTests {
             includeAndroidResources = true
         }
@@ -61,9 +62,14 @@ dependencies {
     androidTestImplementation 'org.mockito:mockito-core:2.10.0'
     androidTestImplementation 'com.android.support.test:runner:1.0.2-alpha1'
 //    androidTestImplementation 'com.android.support.test:testing-support-lib:0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2-alpha1'
-
-
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2-alpha1', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'recyclerview-v7'
+        exclude group: 'com.google.guava:guava:19.0'
+    }
+    androidTestImplementation "com.android.support.test.espresso:espresso-intents:3.0.2-alpha1"
 //    testCompile 'junit:junit:4.12'
 
     kapt "android.arch.lifecycle:compiler:1.1.1"

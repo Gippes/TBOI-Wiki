@@ -8,6 +8,7 @@ import com.example.gippes.isaacfastwiki.db.ItemDao
 import com.example.gippes.isaacfastwiki.repository.AssetUtils
 import com.example.gippes.isaacfastwiki.repository.DataHolder
 import com.example.gippes.isaacfastwiki.repository.MainViewModel
+import com.example.gippes.isaacfastwiki.ui.ItemInfoActivity
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -64,4 +65,5 @@ interface AppComponent {
     fun inject(dataHolder: DataHolder)
     fun inject(context: Context)
     fun inject(mainViewModel: MainViewModel)
+    fun inject(itemInfoActivity: ItemInfoActivity)
 }
