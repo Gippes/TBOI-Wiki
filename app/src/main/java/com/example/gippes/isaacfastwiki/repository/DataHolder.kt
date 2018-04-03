@@ -35,6 +35,8 @@ class DataHolder @Inject constructor(private val mItemDao: ItemDao, val assetUti
     }
 
     fun getItemById(id: Int): LiveData<Item> = mItemDao.getItemById(id)
+
+    fun findElementsByKeyword(keyword: String): LiveData<List<Element>> = mItemDao.findElementsByKeyword(keyword)
 }
 
 class MainViewModel : ViewModel() {

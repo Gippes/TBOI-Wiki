@@ -23,12 +23,7 @@ import javax.inject.Inject
  * Created by Igor Goryunov on 19.02.18.
  */
 class ItemInfoActivity : AppCompatActivity() {
-//    companion object {
-//        const val TAG = "item_info_fragment"
-//    }
 
-    @Inject
-    lateinit var itemDao: ItemDao
     @Inject
     lateinit var assets: AssetUtils
 
@@ -37,10 +32,10 @@ class ItemInfoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_item_info)
         App.appComponent.inject(this)
 
-        findViewById<Toolbar>(R.id.toolbar)?.let {
-            setSupportActionBar(it)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        }
+//        findViewById<Toolbar>(R.id.toolbar)?.let {
+//            setSupportActionBar(it)
+//            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//        }
 
         intent.getIntExtra("id", 0).let {
             val itemLifeData = ViewModelProviders.of(this).get(MainViewModel::class.java).dataHolder.getItemById(it)

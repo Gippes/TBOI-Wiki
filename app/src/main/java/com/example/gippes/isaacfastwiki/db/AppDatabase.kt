@@ -32,6 +32,16 @@ interface ItemDao {
     @Query("SELECT * FROM item WHERE $ID = :id")
     fun getItemById(id: Int): LiveData<Item>
 
+    @Query("SELECT * FROM item WHERE $ID = 0")
+    fun checkTableCreate(): Item?
+
+    @Query("SELECT _id, title, message, image_name FROM item " +
+            "WHERE tags LIKE :keyword " +
+            "OR title LIKE :keyword " +
+            "OR message LIKE :keyword " +
+            "ORDER BY _id ASC")
+    fun findElementsByKeyword(keyword: String): LiveData<List<Element>>
+
     @Insert
     fun insert(vararg items: Item)
 }

@@ -8,5 +8,29 @@
     <color name="messageText">#836e5c</color>
     <color name="bgBottomNavigationBar">#404040</color>
     <color name="selectItemNavigationBar">#6f6358</color>
+    <color name="defaultDark">#FF212121</color>
     <color name="white">#ffffff</color>
+
+
+    <color name="searchBarIconColor">#ff5a595b</color>
+    //Base
+    <color name="searchBarPrimaryColor">#FF212121</color>
+    <color name="searchBarCursorColor">#8000a1ff</color>
+    <color name="searchBarDividerColor">#1F000000</color>
+
+    //Icons
+    <color name="searchBarNavIconTintColor">@color/searchBarIconColor</color>
+    <color name="searchBarMenuIconTintColor">@color/searchBarIconColor</color>
+    <color name="searchBarSearchIconTintColor">@color/searchBarIconColor</color>
+    <color name="searchBarClearIconTintColor">@color/searchBarIconColor</color>
+    <color name="searchBarBackIconTintColor">@color/searchBarIconColor</color>
+
+    //Text
+    <color name="searchBarTextColor">#ffffff</color>
+    <color name="searchBarHintColor">@color/colorPrimary</color>
+    <color name="searchBarPlaceholderColor">#ffffff</color>
+    <color name="searchBarTextHighlightColor">#8000a1ff</color>
+    <color name="leftTextSelectorColor">#00a1ff</color>
+    <color name="middleTextSelectorColor">#00a1ff</color>
+    <color name="rightTextSelectorColor">#00a1ff</color>
 </resources>

@@ -49,7 +49,7 @@ class AppModule(val context: Context) {
         val itemDAO = Room.databaseBuilder(context, AppDatabase::class.java, "items").build().itemDao()
 
         Executors.newSingleThreadExecutor().execute({
-            if (itemDAO.getItemById(0) == null) {
+            if (itemDAO.checkTableCreate() == null) {
                 itemDAO.insert(*assetUtils.makeItemsFromFile("items.json"))
             }
         })

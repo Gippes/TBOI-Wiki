@@ -25,7 +25,7 @@
 
         <activity android:name=".ui.ItemInfoActivity"
             android:parentActivityName=".ui.MainActivity"
-            tools:targetApi="jelly_bean">
+            tools:targetApi="JELLY_BEAN">
         </activity>
 
     </application>
