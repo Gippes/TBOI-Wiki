@@ -19,8 +19,8 @@ class DataHolder @Inject constructor(private val mItemDao: ItemDao, val assetUti
     val cards: LiveData<ArrayList<Element>> = mItemDao.getElementsByItemType("card").transform().initImages()
 
 
-    private fun LiveData<ArrayList<Element>>.initImages(): LiveData<ArrayList<Element>> {
-        return MediatorLiveData<ArrayList<Element>>().apply {
+    private fun <L : List<Element>> LiveData<L>.initImages(): LiveData<L> {
+        return MediatorLiveData<L>().apply {
             addSource(this@initImages, {
                 it?.forEach({ it.image = assetUtils.createDrawableByName(it.imageName) })
                 value = it
@@ -36,7 +36,7 @@ class DataHolder @Inject constructor(private val mItemDao: ItemDao, val assetUti
 
     fun getItemById(id: Int): LiveData<Item> = mItemDao.getItemById(id)
 
-    fun findElementsByKeyword(keyword: String): LiveData<List<Element>> = mItemDao.findElementsByKeyword(keyword)
+    fun findElementsByKeyword(keyword: String): LiveData<List<Element>> = mItemDao.findElementsByKeyword(keyword).initImages()
 }
 
 class MainViewModel : ViewModel() {

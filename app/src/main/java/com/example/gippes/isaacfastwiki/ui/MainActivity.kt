@@ -6,7 +6,6 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
-import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -19,7 +18,6 @@ import android.view.View
 import android.view.View.VISIBLE
 import com.example.gippes.isaacfastwiki.R
 import com.example.gippes.isaacfastwiki.db.Element
-import com.example.gippes.isaacfastwiki.db.Item
 import com.example.gippes.isaacfastwiki.repository.MainViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.mancj.materialsearchbar.adapter.SuggestionsAdapter
@@ -72,19 +70,9 @@ class MainActivity : AppCompatActivity() {
                         }
 
                     })
-                    setSuggstionsClickListener(object: SuggestionsAdapter.OnItemViewClickListener{
-                        override fun OnItemDeleteListener(position: Int, v: View?) {
-                        }
 
-                        override fun OnItemClickListener(position: Int, v: View?) {
-                            suggestions?.let {
-                                if(position < suggestions!!.size) {
-                                    startActivity(intentFor<ItemInfoActivity>("id" to suggestions!![position].id))
-                                }
-                            }
-                        }
+                    setCustomSuggestionAdapter(SuggestionsDetailAdapter(layoutInflater, mOnClickListener))
 
-                    })
                     addTextChangeListener(object : TextWatcher {
                         override fun afterTextChanged(p0: Editable?) {
                         }
@@ -97,10 +85,9 @@ class MainActivity : AppCompatActivity() {
                                 dataHolder.findElementsByKeyword("%$keyword%").observe(this@MainActivity, Observer {
                                     if (it != null) {
                                         suggestions = it
-                                        val suggestions = mutableListOf<String>()
+                                        val suggestions = mutableListOf<Element>()
                                         it.forEach({
-                                            Log.d(LOG_TAG, it.title)
-                                            suggestions.add(it.title)
+                                            suggestions.add(it)
                                         })
                                         updateLastSuggestions(suggestions)
                                     }

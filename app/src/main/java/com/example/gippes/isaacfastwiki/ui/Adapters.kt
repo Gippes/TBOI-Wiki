@@ -11,8 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import com.example.gippes.isaacfastwiki.R
 import com.example.gippes.isaacfastwiki.db.Element
+import com.example.gippes.isaacfastwiki.ui.SuggestionsDetailAdapter.SuggestionHolder
+import com.mancj.materialsearchbar.adapter.SuggestionsAdapter
 
 /**
  * Created by Igor Goryunov on 01.03.18.
@@ -68,5 +71,30 @@ class ElementsAdapter(private val context: Context,
 
     class ItemViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
         var image: ImageView = itemView!!.findViewById(R.id.image)!!
+    }
+}
+
+class SuggestionsDetailAdapter(private val mInflater: LayoutInflater, private val mOnClickListener: View.OnClickListener) : SuggestionsAdapter<Element, SuggestionHolder>(mInflater) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestionHolder =
+            SuggestionHolder(mInflater.inflate(R.layout.view_list_element, parent, false))
+
+    override fun getSingleViewHeight(): Int = 60
+
+    override fun onBindSuggestionHolder(element: Element?, holder: SuggestionHolder?, position: Int) {
+        holder?.apply {
+            if (element != null) {
+                image.setImageDrawable(element.image)
+                title.text = element.title
+                message.text = element.message
+                itemView.tag = element.id
+                itemView.setOnClickListener(mOnClickListener)
+            }
+        }
+    }
+
+    inner class SuggestionHolder(view: View?) : RecyclerView.ViewHolder(view) {
+        val image: ImageView = view!!.findViewById(R.id.image)
+        val title: TextView = view!!.findViewById(R.id.title)
+        val message: TextView = view!!.findViewById(R.id.message)
     }
 }
