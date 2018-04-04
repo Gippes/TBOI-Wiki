@@ -32,19 +32,19 @@ class ItemInfoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_item_info)
         App.appComponent.inject(this)
 
-//        findViewById<Toolbar>(R.id.toolbar)?.let {
-//            setSupportActionBar(it)
-//            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-//        }
+        findViewById<Toolbar>(R.id.item_info_activity_toolbar)?.let {
+            setSupportActionBar(it)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        }
 
         intent.getIntExtra("id", 0).let {
             val itemLifeData = ViewModelProviders.of(this).get(MainViewModel::class.java).dataHolder.getItemById(it)
-
-            itemLifeData.observe(this, Observer {
-                (findViewById<TextView>(R.id.description_item)).text = it?.description?.replace("•", "\n\n•")
-                (findViewById<TextView>(R.id.message))?.text = it?.message
-                it?.imageName?.let { (findViewById<ImageView>(R.id.image_item))?.setImageDrawable(assets.createDrawableByName(it)) }
-            })
+                    itemLifeData.observe(this, Observer {
+                        supportActionBar?.title = it?.title
+                        (findViewById<TextView>(R.id.description_item)).text = it?.description?.replace("•", "\n\n•")
+                        (findViewById<TextView>(R.id.message))?.text = it?.message
+                        it?.imageName?.let { (findViewById<ImageView>(R.id.image_item))?.setImageDrawable(assets.createDrawableByName(it)) }
+                    })
         }
     }
 

@@ -15,7 +15,7 @@
     </style>
 
     <style name="searchBar" parent="IsaacAppTheme">
-    <item name="mt_searchBarColor">@color/searchBarPrimaryColor</item>
+    <item name="mt_searchBarColor">@color/colorPrimary</item>
         <item name="mt_dividerColor">@color/searchBarDividerColor</item>
         <item name="mt_navIconTint">@color/searchBarNavIconTintColor</item>
         <item name="mt_searchIconTint">@color/searchBarSearchIconTintColor</item>

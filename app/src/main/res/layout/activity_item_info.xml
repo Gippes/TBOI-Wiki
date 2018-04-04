@@ -10,7 +10,7 @@
     tools:context="com.example.gippes.isaacfastwiki.ui.ItemInfoActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/main_activity_toolbar"
+        android:id="@+id/item_info_activity_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
