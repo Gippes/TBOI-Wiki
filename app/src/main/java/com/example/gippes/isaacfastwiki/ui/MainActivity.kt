@@ -10,18 +10,24 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.view.ViewPager
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_CLICK
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.FrameLayout
 import com.example.gippes.isaacfastwiki.R
 import com.example.gippes.isaacfastwiki.db.Element
 import com.example.gippes.isaacfastwiki.repository.MainViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.mancj.materialsearchbar.adapter.SuggestionsAdapter
+import kotlinx.android.synthetic.main.search_bar.*
 import org.jetbrains.anko.intentFor
+import kotlin.reflect.jvm.internal.impl.util.ModuleVisibilityHelper
 
 const val LOG_TAG = "gipTag"
 
@@ -33,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     })
 
     private lateinit var mSearchBar: MaterialSearchBar
-    private var suggestions: List<Element>? = null
+    private var suggestions: MutableList<Element>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,14 +57,29 @@ class MainActivity : AppCompatActivity() {
             setupWithViewPager(viewPager)
             viewPager.offscreenPageLimit = 3
         }
+        val transparentBackground = findViewById<FrameLayout>(R.id.transparent_bg)!!.apply {
+            setOnTouchListener({ _, event ->
+                if (event.actionMasked == KeyEvent.ACTION_DOWN) {
+                    mSearchBar.disableSearch()
+                    return@setOnTouchListener true
+                }
+                return@setOnTouchListener false
+            })
+        }
         mSearchBar = findViewById<MaterialSearchBar>(R.id.material_search_bar)!!
                 .apply {
-                    setPlaceHolder(getString(R.string.search))
                     setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener {
                         override fun onButtonClicked(buttonCode: Int) {
                         }
 
                         override fun onSearchStateChanged(enabled: Boolean) {
+                            if (enabled) transparentBackground.apply {
+                                visibility = VISIBLE
+                                isClickable = true
+                            } else transparentBackground.apply {
+                                visibility = GONE
+                                isClickable = false
+                            }
                         }
 
                         override fun onSearchConfirmed(text: CharSequence?) {
@@ -83,16 +104,12 @@ class MainActivity : AppCompatActivity() {
                         override fun onTextChanged(keyword: CharSequence?, p1: Int, p2: Int, p3: Int) {
                             if (keyword != null && keyword.isNotEmpty()) {
                                 dataHolder.findElementsByKeyword("%$keyword%").observe(this@MainActivity, Observer {
-                                    if (it != null) {
-                                        suggestions = it
-                                        val suggestions = mutableListOf<Element>()
-                                        it.forEach({
-                                            suggestions.add(it)
-                                        })
+                                    if (it != null){
+                                        suggestions = it.toMutableList()
                                         updateLastSuggestions(suggestions)
                                     }
                                 })
-                            }
+                            } else  suggestions?.clear()
 
                         }
                     })

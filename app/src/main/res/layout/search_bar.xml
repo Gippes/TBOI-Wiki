@@ -5,18 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/activity_main"/>
+    <include layout="@layout/activity_main" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:background="@color/defaultDark" />
 
-    <!--<FrameLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:background="@color/transparentBlack">-->
-    <!--</FrameLayout>-->
+    <FrameLayout
+        android:id="@+id/transparent_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparentBlack"
+        android:visibility="gone" />
 
     <com.mancj.materialsearchbar.MaterialSearchBar
         android:id="@+id/material_search_bar"
@@ -24,7 +25,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        app:mt_placeholder="Попробуй поиск.."
         app:mt_hint="@string/what_it_look_like"
-        app:mt_maxSuggestionsCount="5"
+        app:mt_maxSuggestionsCount="10"
         app:mt_speechMode="false" />
 </android.support.design.widget.CoordinatorLayout>
