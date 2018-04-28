@@ -10,7 +10,6 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.view.ViewPager
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_CLICK
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
@@ -24,10 +23,8 @@ import com.example.gippes.isaacfastwiki.R
 import com.example.gippes.isaacfastwiki.db.Element
 import com.example.gippes.isaacfastwiki.repository.MainViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
-import com.mancj.materialsearchbar.adapter.SuggestionsAdapter
-import kotlinx.android.synthetic.main.search_bar.*
+import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.intentFor
-import kotlin.reflect.jvm.internal.impl.util.ModuleVisibilityHelper
 
 const val LOG_TAG = "gipTag"
 
@@ -104,13 +101,13 @@ class MainActivity : AppCompatActivity() {
                         override fun onTextChanged(keyword: CharSequence?, p1: Int, p2: Int, p3: Int) {
                             if (keyword != null && keyword.isNotEmpty()) {
                                 dataHolder.findElementsByKeyword("%$keyword%").observe(this@MainActivity, Observer {
-                                    if (it != null){
+                                    if (it != null) {
                                         suggestions = it.toMutableList()
+                                        Log.d(LOG_TAG, "display - ${context.displayMetrics.let { "${it.heightPixels / it.density} dp density - ${it.density}" }}")
                                         updateLastSuggestions(suggestions)
                                     }
                                 })
-                            } else  suggestions?.clear()
-
+                            } else clearSuggestions()
                         }
                     })
                 }
@@ -119,7 +116,6 @@ class MainActivity : AppCompatActivity() {
         findViewById<BottomNavigationView>(R.id.navigation)!!.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.nvgt_items -> {
-//                    mSearchBar.setPlaceHolder(getString(R.string.items))
                     viewPager.update(
                             PageFragment.create(dataHolder.activeItems, mOnClickListener, getString(R.string.activ)),
                             PageFragment.create(dataHolder.passiveItems, mOnClickListener, getString(R.string.passive))
@@ -127,7 +123,6 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nvgt_trinkets -> {
-//                    mSearchBar.setPlaceHolder(getString(R.string.trinkets))
                     viewPager.update(
                             PageFragment.create(dataHolder.trinkets, mOnClickListener, getString(R.string.trinkets)),
                             PageFragment.create(dataHolder.cards, mOnClickListener, getString(R.string.cards))
@@ -147,11 +142,9 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nvgt_monsters -> {
-//                    mSearchBar.setPlaceHolder(getString(R.string.monsters))
                     true
                 }
                 R.id.nvgt_characters -> {
-//                    mSearchBar.setPlaceHolder(getString(R.string.characters))
                     true
                 }
                 R.id.nvgt_objects -> {
@@ -163,14 +156,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun ViewPager.setup(context: MainActivity, vararg fragments: PageFragment): ViewPager {
+    private fun ViewPager.setup(context: MainActivity, vararg fragments: PageFragment): ViewPager {
         adapter = ViewPagerAdapter(context.supportFragmentManager).apply {
             fragments.forEach { addFragment(it) }
         }
         return this
     }
 
-    fun ViewPager.update(vararg fragments: PageFragment) {
+    private fun ViewPager.update(vararg fragments: PageFragment) {
         (adapter as ViewPagerAdapter).apply {
             clear()
             fragments.forEach {

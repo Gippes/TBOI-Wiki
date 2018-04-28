@@ -27,6 +27,5 @@
         android:layout_margin="8dp"
         app:mt_placeholder="Попробуй поиск.."
         app:mt_hint="@string/what_it_look_like"
-        app:mt_maxSuggestionsCount="10"
         app:mt_speechMode="false" />
 </android.support.design.widget.CoordinatorLayout>

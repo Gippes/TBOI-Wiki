@@ -80,8 +80,8 @@ dependencies {
     kaptAndroidTest "com.google.dagger:dagger-compiler:2.11"
 }
 
-//kotlin {
-//    experimental {
-//        coroutines "enable"
-//    }
-//}
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}

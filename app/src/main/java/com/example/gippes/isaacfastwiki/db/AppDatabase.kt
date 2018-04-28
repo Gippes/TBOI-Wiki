@@ -40,7 +40,7 @@ interface ItemDao {
             "OR title LIKE :keyword " +
             "OR message LIKE :keyword " +
             "ORDER BY _id ASC " +
-            "LIMIT 5")
+            "LIMIT 10")
     fun findElementsByKeyword(keyword: String): LiveData<List<Element>>
 
     @Insert

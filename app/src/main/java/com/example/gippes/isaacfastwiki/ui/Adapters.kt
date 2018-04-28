@@ -78,7 +78,7 @@ class SuggestionsDetailAdapter(private val mInflater: LayoutInflater, private va
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestionHolder =
             SuggestionHolder(mInflater.inflate(R.layout.view_list_element, parent, false))
 
-    override fun getSingleViewHeight(): Int = 60
+    override fun getSingleViewHeight(): Int = 70
 
     override fun onBindSuggestionHolder(element: Element?, holder: SuggestionHolder?, position: Int) {
         holder?.apply {

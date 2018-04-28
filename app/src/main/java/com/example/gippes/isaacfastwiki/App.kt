@@ -12,7 +12,8 @@ import com.example.gippes.isaacfastwiki.ui.ItemInfoActivity
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.util.concurrent.Executors
+import org.jetbrains.anko.coroutines.experimental.bg
+import org.jetbrains.anko.doAsync
 import javax.inject.Singleton
 
 /**
@@ -48,11 +49,13 @@ class AppModule(val context: Context) {
     fun provideItemDAO(context: Context, assetUtils: AssetUtils): ItemDao {
         val itemDAO = Room.databaseBuilder(context, AppDatabase::class.java, "items").build().itemDao()
 
-        Executors.newSingleThreadExecutor().execute({
-            if (itemDAO.checkTableCreate() == null) {
-                itemDAO.insert(*assetUtils.makeItemsFromFile("items.json"))
+        doAsync {
+            bg {
+                if (itemDAO.checkTableCreate() == null) {
+                    itemDAO.insert(*assetUtils.makeItemsFromFile("items.json"))
+                }
             }
-        })
+        }
         return itemDAO
     }
 
