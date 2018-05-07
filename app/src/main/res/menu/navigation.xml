@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nvgt_items"
+        android:icon="@drawable/mask"
+        android:title="@string/items" />
+    <item
+        android:id="@+id/nvgt_trinkets"
+        android:icon="@drawable/fish_head"
+        android:title="@string/trinkets" />
+    <item
+        android:id="@+id/nvgt_monsters"
+        android:icon="@drawable/monstro"
+        android:title="@string/monsters" />
+    <item
+        android:id="@+id/nvgt_characters"
+        android:icon="@drawable/isaac"
+        android:title="@string/characters" />
+    <item
+        android:id="@+id/nvgt_objects"
+        android:icon="@drawable/chest"
+        android:title="@string/objects" />
+</menu>
