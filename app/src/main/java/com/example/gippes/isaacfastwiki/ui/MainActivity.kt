@@ -141,16 +141,6 @@ class MainActivity : AppCompatActivity() {
                     })
                     true
                 }
-                R.id.nvgt_monsters -> {
-                    true
-                }
-                R.id.nvgt_characters -> {
-                    true
-                }
-                R.id.nvgt_objects -> {
-//                    mSearchBar.setPlaceHolder(getString(R.string.objects))
-                    true
-                }
                 else -> false
             }
         }

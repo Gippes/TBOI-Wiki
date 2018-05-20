@@ -2,7 +2,12 @@ package com.example.gippes.isaacfastwiki.db
 
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.*
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.Parcel
+import android.os.Parcelable
 import com.example.gippes.isaacfastwiki.db.Item.Column.BUFF_TYPE
 import com.example.gippes.isaacfastwiki.db.Item.Column.ID
 import com.example.gippes.isaacfastwiki.db.Item.Column.IMAGE_NAME
@@ -48,11 +53,41 @@ interface ItemDao {
 }
 
 @Entity
-data class Element(@ColumnInfo(name = ID) var id: Int = 0,
-                   @ColumnInfo(name = TITLE) var title: String = "",
-                   @ColumnInfo(name = MESSAGE) var message: String = "",
-                   @ColumnInfo(name = IMAGE_NAME) var imageName: String = "",
-                   @Ignore var image: Drawable? = null): Serializable
+class Element(@ColumnInfo(name = ID) var id: Int = 0,
+              @ColumnInfo(name = TITLE) var title: String = "",
+              @ColumnInfo(name = MESSAGE) var message: String = "",
+              @ColumnInfo(name = IMAGE_NAME) var imageName: String = "",
+              @Ignore var image: Drawable? = null) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readInt(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            BitmapDrawable(Resources.getSystem(), parcel.readParcelable<Bitmap>(ClassLoader.getSystemClassLoader())))
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(id)
+        parcel.writeString(title)
+        parcel.writeString(message)
+        parcel.writeString(imageName)
+        image?.let { parcel.writeParcelable((it as BitmapDrawable).bitmap, flags) }
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Element> {
+        override fun createFromParcel(parcel: Parcel): Element {
+            return Element(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Element?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+}
 
 @Entity
 data class Item(@PrimaryKey @ColumnInfo(name = ID) var id: Int,

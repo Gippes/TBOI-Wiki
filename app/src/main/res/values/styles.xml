@@ -1,5 +1,4 @@
 <resources>
-
     <style name="IsaacAppTheme" parent="IsaacAppTheme.Base" />
 
     <style name="IsaacAppTheme.Base" parent="Theme.AppCompat.NoActionBar">
@@ -7,9 +6,7 @@
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-
     </style>
 
     <style name="SplashTheme" parent="IsaacAppTheme">
